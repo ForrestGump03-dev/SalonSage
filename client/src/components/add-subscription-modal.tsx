@@ -30,6 +30,7 @@ export function AddSubscriptionModal({ open, onOpenChange, preselectedClientId }
 
   const form = useForm<InsertClientSubscription>({
     resolver: zodResolver(insertClientSubscriptionSchema),
+    mode: "onChange", // Enable real-time validation
     defaultValues: {
       clientId: preselectedClientId || "",
       subscriptionId: "",
@@ -40,7 +41,11 @@ export function AddSubscriptionModal({ open, onOpenChange, preselectedClientId }
   });
 
   const selectedSubscriptionId = form.watch("subscriptionId");
+  const selectedClientId = form.watch("clientId");
   const selectedSubscription = subscriptions.find(s => s.id === selectedSubscriptionId);
+  
+  // Check if both required fields are selected (simple check)
+  const isFormValid = Boolean(selectedClientId && selectedSubscriptionId);
 
   // Update remaining uses when subscription changes
   React.useEffect(() => {
@@ -91,11 +96,11 @@ export function AddSubscriptionModal({ open, onOpenChange, preselectedClientId }
               name="clientId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Client</FormLabel>
+                  <FormLabel>Cliente</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a client" />
+                        <SelectValue placeholder="Seleziona un cliente" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -116,11 +121,11 @@ export function AddSubscriptionModal({ open, onOpenChange, preselectedClientId }
               name="subscriptionId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Subscription Package</FormLabel>
+                  <FormLabel>Pacchetto Abbonamento</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a subscription" />
+                        <SelectValue placeholder="Seleziona un pacchetto" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -141,10 +146,10 @@ export function AddSubscriptionModal({ open, onOpenChange, preselectedClientId }
                 <h4 className="font-medium text-sm mb-2">{selectedSubscription.name}</h4>
                 <p className="text-sm text-muted-foreground mb-2">{selectedSubscription.description}</p>
                 <p className="text-sm">
-                  <strong>Usage Limit:</strong> {selectedSubscription.usageLimit} services
+                  <strong>Limite Utilizzi:</strong> {selectedSubscription.usageLimit} servizi
                 </p>
                 <p className="text-sm">
-                  <strong>Services Included:</strong> {selectedSubscription.servicesIncluded.join(", ")}
+                  <strong>Servizi Inclusi:</strong> {selectedSubscription.servicesIncluded.join(", ")}
                 </p>
               </div>
             )}
@@ -155,14 +160,14 @@ export function AddSubscriptionModal({ open, onOpenChange, preselectedClientId }
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                Cancel
+                Annulla
               </Button>
               <Button
                 type="submit"
-                disabled={createClientSubscriptionMutation.isPending}
+                disabled={createClientSubscriptionMutation.isPending || !isFormValid}
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                {createClientSubscriptionMutation.isPending ? "Adding..." : "Add Subscription"}
+                {createClientSubscriptionMutation.isPending ? "Aggiungendo..." : "Aggiungi Abbonamento"}
               </Button>
             </div>
           </form>

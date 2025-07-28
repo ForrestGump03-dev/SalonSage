@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,9 +16,18 @@ interface ScaleSubscriptionModalProps {
 }
 
 export function ScaleSubscriptionModal({ open, onOpenChange, clientSubscription }: ScaleSubscriptionModalProps) {
-  const [additionalUses, setAdditionalUses] = useState<number>(1);
+  const [usesToModify, setUsesToModify] = useState<number>(1);
+  const [operationType, setOperationType] = useState<'add' | 'remove'>('remove');
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Reset states when modal opens/closes
+  useEffect(() => {
+    if (open) {
+      setUsesToModify(1);
+      setOperationType('remove');
+    }
+  }, [open]);
 
   const { data: subscription } = useQuery<Subscription>({
     queryKey: ["/api/subscriptions", clientSubscription.subscriptionId],
@@ -31,22 +40,32 @@ export function ScaleSubscriptionModal({ open, onOpenChange, clientSubscription 
   const scaleSubscriptionMutation = useMutation({
     mutationFn: async () => {
       const currentScaled = clientSubscription.scaledUsageLimit || 0;
-      const newScaledLimit = currentScaled + additionalUses;
+      const usesChange = operationType === 'add' ? usesToModify : -usesToModify;
+      const newScaledLimit = currentScaled + usesChange;
+      const newRemainingUses = clientSubscription.remainingUses + usesChange;
       
-      const response = await apiRequest("PUT", `/api/client-subscriptions/${clientSubscription.id}`, {
+      // Validazione per evitare numeri negativi
+      if (newRemainingUses < 0) {
+        throw new Error("Non puoi rimuovere più utilizzi di quelli rimanenti");
+      }
+      
+      const payload = {
         scaledUsageLimit: newScaledLimit,
-        remainingUses: clientSubscription.remainingUses + additionalUses
-      });
+        remainingUses: newRemainingUses
+      };
+      
+      const response = await apiRequest("PUT", `/api/client-subscriptions/${clientSubscription.id}`, payload);
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/client-subscriptions"] });
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/dashboard"] });
+      const action = operationType === 'add' ? 'potenziato' : 'ridotto';
       toast({
         title: "Successo",
-        description: `Abbonamento potenziato con ${additionalUses} utilizzi aggiuntivi`,
+        description: `Abbonamento ${action} con ${usesToModify} utilizzi`,
       });
-      setAdditionalUses(1);
+      setUsesToModify(1);
       onOpenChange(false);
     },
     onError: (error: any) => {
@@ -59,23 +78,31 @@ export function ScaleSubscriptionModal({ open, onOpenChange, clientSubscription 
   });
 
   const handleSubmit = () => {
-    if (additionalUses < 1) {
+    if (usesToModify < 1) {
       toast({
         title: "Attenzione",
-        description: "Inserisci un numero valido di utilizzi aggiuntivi",
+        description: "Inserisci un numero valido di utilizzi da modificare",
         variant: "destructive",
       });
       return;
     }
+    
+    if (operationType === 'remove' && usesToModify > clientSubscription.remainingUses) {
+      toast({
+        title: "Attenzione", 
+        description: "Non puoi rimuovere più utilizzi di quelli rimanenti",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     scaleSubscriptionMutation.mutate();
   };
 
   const currentTotal = (subscription?.usageLimit || 0) + (clientSubscription.scaledUsageLimit || 0);
-  const newTotal = currentTotal + additionalUses;
-  
-  // Calculate estimated additional cost (base price per use * additional uses)
-  const pricePerUse = subscription ? parseFloat(subscription.price) / subscription.usageLimit : 0;
-  const estimatedCost = pricePerUse * additionalUses;
+  const usesChange = operationType === 'add' ? usesToModify : -usesToModify;
+  const newTotal = currentTotal + usesChange;
+  const newRemainingUses = clientSubscription.remainingUses + usesChange;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -83,10 +110,10 @@ export function ScaleSubscriptionModal({ open, onOpenChange, clientSubscription 
         <DialogHeader>
           <DialogTitle className="font-poppins font-semibold text-xl flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-primary" />
-            Potenzia Abbonamento
+            Gestisci Abbonamento
           </DialogTitle>
           <DialogDescription>
-            Aggiungi utilizzi extra all'abbonamento esistente del cliente
+            Aggiungi o rimuovi utilizzi dall'abbonamento del cliente
           </DialogDescription>
         </DialogHeader>
         
@@ -119,20 +146,56 @@ export function ScaleSubscriptionModal({ open, onOpenChange, clientSubscription 
             </div>
           </div>
 
-          {/* Add Uses Input */}
+          {/* Operation Type Selection */}
+          <div className="space-y-3">
+            <Label>Tipo di operazione</Label>
+            <div className="flex space-x-4">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id="add"
+                  name="operation"
+                  value="add"
+                  checked={operationType === 'add'}
+                  onChange={(e) => setOperationType('add')}
+                  className="w-4 h-4"
+                />
+                <Label htmlFor="add" className="text-sm">Aggiungi utilizzi</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id="remove"
+                  name="operation"
+                  value="remove"
+                  checked={operationType === 'remove'}
+                  onChange={(e) => setOperationType('remove')}
+                  className="w-4 h-4"
+                />
+                <Label htmlFor="remove" className="text-sm">Rimuovi utilizzi</Label>
+              </div>
+            </div>
+          </div>
+
+          {/* Uses Input */}
           <div className="space-y-2">
-            <Label htmlFor="additionalUses">Utilizzi aggiuntivi</Label>
+            <Label htmlFor="usesToModify">
+              {operationType === 'add' ? 'Utilizzi da aggiungere' : 'Utilizzi da rimuovere'}
+            </Label>
             <Input
-              id="additionalUses"
+              id="usesToModify"
               type="number"
               min="1"
-              max="50"
-              value={additionalUses}
-              onChange={(e) => setAdditionalUses(parseInt(e.target.value) || 1)}
-              placeholder="Numero di utilizzi da aggiungere"
+              max={operationType === 'remove' ? clientSubscription.remainingUses : 50}
+              value={usesToModify}
+              onChange={(e) => setUsesToModify(parseInt(e.target.value) || 1)}
+              placeholder={operationType === 'add' ? "Numero di utilizzi da aggiungere" : "Numero di utilizzi da rimuovere"}
             />
             <p className="text-xs text-muted-foreground">
-              Puoi aggiungere da 1 a 50 utilizzi aggiuntivi
+              {operationType === 'add' 
+                ? 'Puoi aggiungere da 1 a 50 utilizzi'
+                : `Puoi rimuovere da 1 a ${clientSubscription.remainingUses} utilizzi`
+              }
             </p>
           </div>
 
@@ -141,18 +204,14 @@ export function ScaleSubscriptionModal({ open, onOpenChange, clientSubscription 
             <h4 className="font-medium mb-3">Anteprima modifiche:</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span>Utilizzi totali dopo potenziamento:</span>
+                <span>Utilizzi totali dopo modifica:</span>
                 <span className="font-medium text-primary">{newTotal}</span>
               </div>
               <div className="flex justify-between">
                 <span>Nuovi utilizzi rimanenti:</span>
-                <span className="font-medium text-success">
-                  {clientSubscription.remainingUses + additionalUses}
+                <span className={`font-medium ${newRemainingUses >= 0 ? 'text-success' : 'text-destructive'}`}>
+                  {newRemainingUses}
                 </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Costo stimato aggiuntivo:</span>
-                <span className="font-medium">€{estimatedCost.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -168,12 +227,18 @@ export function ScaleSubscriptionModal({ open, onOpenChange, clientSubscription 
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={scaleSubscriptionMutation.isPending || additionalUses < 1}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            disabled={scaleSubscriptionMutation.isPending || usesToModify < 1 || newRemainingUses < 0}
+            className={operationType === 'add' 
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+              : "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            }
           >
             {scaleSubscriptionMutation.isPending 
-              ? "Potenziando..." 
-              : `Potenzia (+${additionalUses} utilizzi)`
+              ? (operationType === 'add' ? "Aggiungendo..." : "Rimuovendo...")
+              : (operationType === 'add' 
+                  ? `Aggiungi ${usesToModify} utilizzi`
+                  : `Rimuovi ${usesToModify} utilizzi`
+                )
             }
           </Button>
         </div>

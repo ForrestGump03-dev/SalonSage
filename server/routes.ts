@@ -156,6 +156,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/subscriptions/:id", async (req, res) => {
+    try {
+      const subscriptionId = req.params.id;
+      await storage.deleteSubscription(subscriptionId);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting subscription:", error);
+      res.status(500).json({ message: "Failed to delete subscription" });
+    }
+  });
+
   // Client Subscription routes
   app.get("/api/client-subscriptions", async (req, res) => {
     try {

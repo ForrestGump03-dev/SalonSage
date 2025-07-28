@@ -41,7 +41,9 @@ export default function Subscriptions() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddPackageModal, setShowAddPackageModal] = useState(false);
   const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(false);
+  const [showScaleModal, setShowScaleModal] = useState(false);
   const [editingPackage, setEditingPackage] = useState<Subscription | null>(null);
+  const [scalingSubscription, setScalingSubscription] = useState<ClientSubscription | null>(null);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -129,11 +131,23 @@ export default function Subscriptions() {
     (subscription.description && subscription.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  const filteredClientSubscriptions = enhancedClientSubscriptions.filter(cs =>
-    cs.client?.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cs.client?.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cs.subscription?.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredClientSubscriptions = enhancedClientSubscriptions.filter(cs => {
+    // Hide subscriptions with no remaining uses or inactive subscriptions
+    if (!cs.isActive || cs.remainingUses <= 0) {
+      return false;
+    }
+    
+    // Apply search filter
+    if (searchTerm) {
+      return (
+        cs.client?.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cs.client?.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cs.subscription?.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    return true;
+  });
 
   const handleAddPackage = () => {
     form.reset();
@@ -147,11 +161,66 @@ export default function Subscriptions() {
     }
   };
 
+  const handleScaleSubscription = (clientSubscription: ClientSubscription) => {
+    setScalingSubscription(clientSubscription);
+    setShowScaleModal(true);
+  };
+
+  // Funzione di test per aggiungere dati finti
+  const addTestData = async () => {
+    try {
+      // Aggiungi un cliente di test
+      const testClient = await apiRequest("POST", "/api/clients", {
+        firstName: "Mario",
+        lastName: "Rossi", 
+        phone: "123-456-7890",
+        email: "mario.rossi@test.com",
+        notes: "Cliente di test"
+      });
+      const clientData = await testClient.json();
+
+      // Aggiungi un pacchetto di test
+      const testPackage = await apiRequest("POST", "/api/subscriptions", {
+        name: "Pacchetto Test",
+        description: "Pacchetto per testare le funzionalità",
+        price: "50.00",
+        usageLimit: 5
+      });
+      const packageData = await testPackage.json();
+
+      // Aggiungi una subscription di test
+      const testSubscription = await apiRequest("POST", "/api/client-subscriptions", {
+        clientId: clientData.id,
+        subscriptionId: packageData.id,
+        remainingUses: 3,
+        isActive: true,
+        expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 giorni
+      });
+
+      toast({
+        title: "Dati di test aggiunti",
+        description: "Cliente, pacchetto e abbonamento di test creati con successo"
+      });
+
+      // Refresh delle query
+      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/subscriptions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/client-subscriptions"] });
+    } catch (error) {
+      console.error("Errore nell'aggiunta dei dati di test:", error);
+      toast({
+        title: "Errore",
+        description: "Impossibile aggiungere i dati di test",
+        variant: "destructive"
+      });
+    }
+  };
+
   const onSubmit = (data: InsertSubscription) => {
     createSubscriptionMutation.mutate(data);
   };
 
-  const activeSubscriptions = clientSubscriptions.filter(cs => cs.isActive);
+  const activeSubscriptions = clientSubscriptions.filter(cs => cs.isActive && cs.remainingUses > 0);
   const totalRevenue = clientSubscriptions.reduce((sum, cs) => {
     const subscription = subscriptionsMap.get(cs.subscriptionId);
     return sum + (subscription ? parseFloat(subscription.price) : 0);
@@ -363,13 +432,23 @@ export default function Subscriptions() {
                 />
                 <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
               </div>
-              <Button
-                onClick={() => setShowAddSubscriptionModal(true)}
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Assign Subscription
-              </Button>
+              <div className="flex space-x-2">
+                <Button
+                  onClick={() => setShowAddSubscriptionModal(true)}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Assign Subscription
+                </Button>
+                <Button
+                  onClick={addTestData}
+                  variant="outline"
+                  className="text-green-600 hover:text-green-700"
+                >
+                  <Package className="w-4 h-4 mr-2" />
+                  Aggiungi Dati Test
+                </Button>
+              </div>
             </div>
 
             {/* Client Subscriptions Table */}
@@ -412,6 +491,7 @@ export default function Subscriptions() {
                         <TableHead>Purchase Date</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">Value</TableHead>
+                        <TableHead className="text-right">Azioni</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -465,6 +545,19 @@ export default function Subscriptions() {
                             <span className="font-medium text-foreground">
                               €{cs.subscription?.price}
                             </span>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end space-x-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleScaleSubscription(cs)}
+                                className="text-blue-600 hover:text-blue-700"
+                              >
+                                <TrendingUp className="w-3 h-3 mr-1" />
+                                Scala
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -585,6 +678,18 @@ export default function Subscriptions() {
         open={showAddSubscriptionModal} 
         onOpenChange={setShowAddSubscriptionModal} 
       />
+
+      {/* Scale Subscription Modal */}
+      {scalingSubscription && (
+        <ScaleSubscriptionModal 
+          open={showScaleModal} 
+          onOpenChange={(open) => {
+            setShowScaleModal(open);
+            if (!open) setScalingSubscription(null);
+          }}
+          clientSubscription={scalingSubscription}
+        />
+      )}
     </Layout>
   );
 }

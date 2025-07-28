@@ -81,6 +81,9 @@ export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({
 export const insertClientSubscriptionSchema = createInsertSchema(clientSubscriptions).omit({
   id: true,
   purchaseDate: true,
+}).extend({
+  clientId: z.string().min(1, "Cliente è obbligatorio"),
+  subscriptionId: z.string().min(1, "Pacchetto abbonamento è obbligatorio"),
 });
 
 export const insertBookingSchema = createInsertSchema(bookings).omit({
