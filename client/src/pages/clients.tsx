@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { type Client } from "@shared/schema";
+import { type Client, type InsertClient } from "@shared/schema";
 import { Search, Phone, Mail, Calendar, Trash2, Edit, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { AddClientModal } from "@/components/add-client-modal";
@@ -20,6 +20,7 @@ export default function Clients() {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<string | undefined>();
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -48,6 +49,29 @@ export default function Clients() {
     },
   });
 
+  const updateClientMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: InsertClient }) => {
+      const response = await apiRequest("PUT", `/api/clients/${id}`, data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
+      toast({
+        title: "Successo",
+        description: "Cliente aggiornato con successo",
+      });
+      setEditingClient(null);
+      setShowAddClientModal(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Errore",
+        description: error.message || "Impossibile aggiornare il cliente",
+        variant: "destructive",
+      });
+    },
+  });
+
   const filteredClients = clients.filter(client => 
     client.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     client.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -69,6 +93,11 @@ export default function Clients() {
     if (confirm("Sei sicuro di voler eliminare questo cliente?")) {
       deleteClientMutation.mutate(clientId);
     }
+  };
+
+  const handleEditClient = (client: Client) => {
+    setEditingClient(client);
+    setShowAddClientModal(true);
   };
 
   if (isLoading) {
@@ -262,6 +291,14 @@ export default function Clients() {
                           </Button>
                           <Button
                             size="sm"
+                            variant="outline"
+                            onClick={() => handleEditClient(client)}
+                            className="text-blue-600 hover:text-blue-700"
+                          >
+                            <Edit className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            size="sm"
                             variant="ghost"
                             onClick={() => handleDeleteClient(client.id)}
                             className="text-destructive hover:text-destructive"
@@ -280,7 +317,15 @@ export default function Clients() {
       </div>
 
       {/* Modals */}
-      <AddClientModal open={showAddClientModal} onOpenChange={setShowAddClientModal} />
+      <AddClientModal 
+        open={showAddClientModal} 
+        onOpenChange={(open) => {
+          setShowAddClientModal(open);
+          if (!open) setEditingClient(null);
+        }}
+        editingClient={editingClient}
+        onUpdate={(id, data) => updateClientMutation.mutate({ id, data })}
+      />
       <AddBookingModal 
         open={showBookingModal} 
         onOpenChange={setShowBookingModal}

@@ -1,3 +1,4 @@
+import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertClientSchema, type InsertClient } from "@shared/schema";
+import { insertClientSchema, type InsertClient, type Client } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -14,9 +15,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 interface AddClientModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  editingClient?: Client | null;
+  onUpdate?: (id: string, data: InsertClient) => void;
 }
 
-export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
+export function AddClientModal({ open, onOpenChange, editingClient, onUpdate }: AddClientModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -30,6 +33,27 @@ export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
       notes: "",
     },
   });
+
+  // Pre-popola il form quando si modifica un cliente
+  React.useEffect(() => {
+    if (editingClient) {
+      form.reset({
+        firstName: editingClient.firstName,
+        lastName: editingClient.lastName,
+        phone: editingClient.phone || "",
+        email: editingClient.email || "",
+        notes: editingClient.notes || "",
+      });
+    } else {
+      form.reset({
+        firstName: "",
+        lastName: "",
+        phone: "",
+        email: "",
+        notes: "",
+      });
+    }
+  }, [editingClient, form]);
 
   const createClientMutation = useMutation({
     mutationFn: async (data: InsertClient) => {
@@ -55,14 +79,20 @@ export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
   });
 
   const onSubmit = (data: InsertClient) => {
-    createClientMutation.mutate(data);
+    if (editingClient && onUpdate) {
+      onUpdate(editingClient.id, data);
+    } else {
+      createClientMutation.mutate(data);
+    }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-poppins font-semibold text-xl">Aggiungi Nuovo Cliente</DialogTitle>
+          <DialogTitle className="font-poppins font-semibold text-xl">
+            {editingClient ? "Modifica Cliente" : "Aggiungi Nuovo Cliente"}
+          </DialogTitle>
         </DialogHeader>
         
         <Form {...form}>
@@ -157,7 +187,10 @@ export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
                 disabled={createClientMutation.isPending}
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                {createClientMutation.isPending ? "Aggiunta in corso..." : "Aggiungi Cliente"}
+                {createClientMutation.isPending 
+                  ? (editingClient ? "Aggiornamento in corso..." : "Aggiunta in corso...")
+                  : (editingClient ? "Aggiorna Cliente" : "Aggiungi Cliente")
+                }
               </Button>
             </div>
           </form>

@@ -23,16 +23,6 @@ export function Header({ title, subtitle }: HeaderProps) {
             )}
           </div>
           <div className="flex items-center space-x-4">
-            {/* Search Bar */}
-            <div className="relative">
-              <Input
-                type="text"
-                placeholder="Cerca clienti..."
-                className="pl-10 pr-4 py-2 w-64"
-              />
-              <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
-            </div>
-            
             {/* Add Client Button */}
             <Button
               onClick={() => setShowAddClientModal(true)}
