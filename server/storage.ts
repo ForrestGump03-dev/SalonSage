@@ -137,7 +137,9 @@ export class MemStorage implements IStorage {
   async createClient(insertClient: InsertClient): Promise<Client> {
     const id = randomUUID();
     const client: Client = { 
-      ...insertClient, 
+      ...insertClient,
+      email: insertClient.email || null,
+      notes: insertClient.notes || null,
       id, 
       createdAt: new Date() 
     };
@@ -169,7 +171,12 @@ export class MemStorage implements IStorage {
 
   async createService(insertService: InsertService): Promise<Service> {
     const id = randomUUID();
-    const service: Service = { ...insertService, id };
+    const service: Service = { 
+      ...insertService,
+      description: insertService.description || null,
+      isActive: insertService.isActive ?? true,
+      id 
+    };
     this.services.set(id, service);
     return service;
   }
@@ -198,7 +205,12 @@ export class MemStorage implements IStorage {
 
   async createSubscription(insertSubscription: InsertSubscription): Promise<Subscription> {
     const id = randomUUID();
-    const subscription: Subscription = { ...insertSubscription, id };
+    const subscription: Subscription = { 
+      ...insertSubscription,
+      description: insertSubscription.description || null,
+      isActive: insertSubscription.isActive ?? true,
+      id 
+    };
     this.subscriptions.set(id, subscription);
     return subscription;
   }
@@ -232,7 +244,10 @@ export class MemStorage implements IStorage {
   async createClientSubscription(insertClientSubscription: InsertClientSubscription): Promise<ClientSubscription> {
     const id = randomUUID();
     const clientSubscription: ClientSubscription = { 
-      ...insertClientSubscription, 
+      ...insertClientSubscription,
+      isActive: insertClientSubscription.isActive ?? true,
+      expiryDate: insertClientSubscription.expiryDate || null,
+      scaledUsageLimit: insertClientSubscription.scaledUsageLimit || null,
       id, 
       purchaseDate: new Date() 
     };
@@ -269,7 +284,10 @@ export class MemStorage implements IStorage {
   async createBooking(insertBooking: InsertBooking): Promise<Booking> {
     const id = randomUUID();
     const booking: Booking = { 
-      ...insertBooking, 
+      ...insertBooking,
+      notes: insertBooking.notes || null,
+      additionalServices: insertBooking.additionalServices || null,
+      clientSubscriptionId: insertBooking.clientSubscriptionId || null,
       id, 
       createdAt: new Date() 
     };
@@ -301,7 +319,12 @@ export class MemStorage implements IStorage {
 
   async createLicenseKey(insertLicenseKey: InsertLicenseKey): Promise<LicenseKey> {
     const id = randomUUID();
-    const licenseKey: LicenseKey = { ...insertLicenseKey, id };
+    const licenseKey: LicenseKey = { 
+      ...insertLicenseKey,
+      isActive: insertLicenseKey.isActive ?? true,
+      expiryDate: insertLicenseKey.expiryDate || null,
+      id 
+    };
     this.licenseKeys.set(id, licenseKey);
     return licenseKey;
   }

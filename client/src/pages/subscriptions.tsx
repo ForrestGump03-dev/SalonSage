@@ -35,6 +35,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AddSubscriptionModal } from "@/components/add-subscription-modal";
+import { ScaleSubscriptionModal } from "@/components/scale-subscription-modal";
 
 export default function Subscriptions() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -77,16 +78,16 @@ export default function Subscriptions() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/subscriptions"] });
       toast({
-        title: "Success",
-        description: "Subscription package created successfully",
+        title: "Successo",
+        description: "Pacchetto abbonamento creato con successo",
       });
       form.reset();
       setShowAddPackageModal(false);
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to create subscription package",
+        title: "Errore",
+        description: error.message || "Impossibile creare il pacchetto abbonamento",
         variant: "destructive",
       });
     },
@@ -99,14 +100,14 @@ export default function Subscriptions() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/subscriptions"] });
       toast({
-        title: "Success",
-        description: "Subscription package deleted successfully",
+        title: "Successo",
+        description: "Pacchetto abbonamento eliminato con successo",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to delete subscription package",
+        title: "Errore",
+        description: error.message || "Impossibile eliminare il pacchetto abbonamento",
         variant: "destructive",
       });
     },
@@ -141,7 +142,7 @@ export default function Subscriptions() {
   };
 
   const handleDeletePackage = (packageId: string) => {
-    if (confirm("Are you sure you want to delete this subscription package?")) {
+    if (confirm("Sei sicuro di voler eliminare questo pacchetto abbonamento?")) {
       deleteSubscriptionMutation.mutate(packageId);
     }
   };
@@ -158,7 +159,7 @@ export default function Subscriptions() {
 
   if (subscriptionsLoading || clientSubscriptionsLoading) {
     return (
-      <Layout title="Subscriptions" subtitle="Manage subscription packages and memberships">
+      <Layout title="Abbonamenti" subtitle="Gestisci pacchetti abbonamento e iscrizioni">
         <div className="animate-pulse">
           <div className="h-10 bg-gray-200 rounded w-1/3 mb-6"></div>
           <div className="space-y-4">
@@ -172,7 +173,7 @@ export default function Subscriptions() {
   }
 
   return (
-    <Layout title="Subscriptions" subtitle="Manage subscription packages and memberships">
+    <Layout title="Abbonamenti" subtitle="Gestisci pacchetti abbonamento e iscrizioni">
       <div className="space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -180,7 +181,7 @@ export default function Subscriptions() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Active Subscriptions</p>
+                  <p className="text-muted-foreground text-sm font-medium">Abbonamenti Attivi</p>
                   <p className="text-2xl font-bold text-foreground mt-1">{activeSubscriptions.length}</p>
                 </div>
                 <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -194,7 +195,7 @@ export default function Subscriptions() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Package Options</p>
+                  <p className="text-muted-foreground text-sm font-medium">Opzioni Pacchetti</p>
                   <p className="text-2xl font-bold text-foreground mt-1">{subscriptions.length}</p>
                 </div>
                 <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
@@ -208,8 +209,8 @@ export default function Subscriptions() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Total Revenue</p>
-                  <p className="text-2xl font-bold text-foreground mt-1">${totalRevenue.toFixed(2)}</p>
+                  <p className="text-muted-foreground text-sm font-medium">Ricavi Totali</p>
+                  <p className="text-2xl font-bold text-foreground mt-1">€{totalRevenue.toFixed(2)}</p>
                 </div>
                 <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
                   <DollarSign className="text-success w-5 h-5" />

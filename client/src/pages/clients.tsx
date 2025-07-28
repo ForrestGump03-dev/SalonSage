@@ -66,14 +66,14 @@ export default function Clients() {
   };
 
   const handleDeleteClient = (clientId: string) => {
-    if (confirm("Are you sure you want to delete this client?")) {
+    if (confirm("Sei sicuro di voler eliminare questo cliente?")) {
       deleteClientMutation.mutate(clientId);
     }
   };
 
   if (isLoading) {
     return (
-      <Layout title="Clients" subtitle="Manage your salon clients and their information">
+      <Layout title="Clienti" subtitle="Gestisci i clienti del tuo salone e le loro informazioni">
         <div className="animate-pulse">
           <div className="h-10 bg-gray-200 rounded w-1/3 mb-6"></div>
           <div className="space-y-4">
@@ -87,14 +87,14 @@ export default function Clients() {
   }
 
   return (
-    <Layout title="Clients" subtitle="Manage your salon clients and their information">
+    <Layout title="Clienti" subtitle="Gestisci i clienti del tuo salone e le loro informazioni">
       <div className="space-y-6">
         {/* Search and Actions */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="relative flex-1 max-w-md">
             <Input
               type="text"
-              placeholder="Search clients by name, phone, or email..."
+              placeholder="Cerca clienti per nome, telefono o email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -106,7 +106,7 @@ export default function Clients() {
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
             <UserPlus className="w-4 h-4 mr-2" />
-            Add New Client
+            Aggiungi Cliente
           </Button>
         </div>
 
@@ -116,7 +116,7 @@ export default function Clients() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Total Clients</p>
+                  <p className="text-muted-foreground text-sm font-medium">Totale Clienti</p>
                   <p className="text-2xl font-bold text-foreground mt-1">{clients.length}</p>
                 </div>
                 <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -130,7 +130,7 @@ export default function Clients() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">New This Month</p>
+                  <p className="text-muted-foreground text-sm font-medium">Nuovi Questo Mese</p>
                   <p className="text-2xl font-bold text-foreground mt-1">
                     {clients.filter(client => {
                       const clientDate = new Date(client.createdAt);
@@ -151,7 +151,7 @@ export default function Clients() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Active Clients</p>
+                  <p className="text-muted-foreground text-sm font-medium">Clienti Attivi</p>
                   <p className="text-2xl font-bold text-foreground mt-1">{clients.length}</p>
                 </div>
                 <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
@@ -166,7 +166,7 @@ export default function Clients() {
         <Card>
           <CardHeader>
             <CardTitle className="font-poppins font-semibold text-lg">
-              Client Directory ({filteredClients.length})
+              Elenco Clienti ({filteredClients.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -174,12 +174,12 @@ export default function Clients() {
               <div className="text-center py-12">
                 <UserPlus className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-foreground mb-2">
-                  {searchTerm ? "No clients found" : "No clients yet"}
+                  {searchTerm ? "Nessun cliente trovato" : "Nessun cliente ancora"}
                 </h3>
                 <p className="text-muted-foreground mb-4">
                   {searchTerm 
-                    ? "Try adjusting your search terms" 
-                    : "Add your first client to get started"
+                    ? "Prova a modificare i termini di ricerca" 
+                    : "Aggiungi il tuo primo cliente per iniziare"
                   }
                 </p>
                 {!searchTerm && (
@@ -188,7 +188,7 @@ export default function Clients() {
                     className="bg-primary text-primary-foreground hover:bg-primary/90"
                   >
                     <UserPlus className="w-4 h-4 mr-2" />
-                    Add First Client
+                    Aggiungi Primo Cliente
                   </Button>
                 )}
               </div>
@@ -196,11 +196,11 @@ export default function Clients() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Member Since</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>Nome</TableHead>
+                    <TableHead>Contatto</TableHead>
+                    <TableHead>Cliente Da</TableHead>
+                    <TableHead>Stato</TableHead>
+                    <TableHead className="text-right">Azioni</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -239,7 +239,7 @@ export default function Clients() {
                       </TableCell>
                       <TableCell>
                         <Badge variant="secondary" className="bg-success/10 text-success">
-                          Active
+                          Attivo
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
@@ -250,7 +250,7 @@ export default function Clients() {
                             onClick={() => handleBookService(client.id)}
                           >
                             <Calendar className="w-3 h-3 mr-1" />
-                            Book
+                            Prenota
                           </Button>
                           <Button
                             size="sm"
@@ -258,7 +258,7 @@ export default function Clients() {
                             onClick={() => handleAddSubscription(client.id)}
                           >
                             <UserPlus className="w-3 h-3 mr-1" />
-                            Subscribe
+                            Abbonamento
                           </Button>
                           <Button
                             size="sm"

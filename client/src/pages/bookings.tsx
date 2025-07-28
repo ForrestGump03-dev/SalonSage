@@ -6,9 +6,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { type Booking, type Client, type Service } from "@shared/schema";
-import { Search, Calendar, Clock, DollarSign, CalendarPlus, CheckCircle, XCircle } from "lucide-react";
+import { Search, Calendar, Clock, DollarSign, CalendarPlus, CheckCircle, XCircle, Plus } from "lucide-react";
 import { useState } from "react";
 import { AddBookingModal } from "@/components/add-booking-modal";
+import { AddExtraServicesModal } from "@/components/add-extra-services-modal";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
@@ -16,6 +17,8 @@ import { format } from "date-fns";
 export default function Bookings() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddBookingModal, setShowAddBookingModal] = useState(false);
+  const [showExtraServicesModal, setShowExtraServicesModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const { toast } = useToast();
@@ -84,11 +87,11 @@ export default function Bookings() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
-        return <Badge className="bg-success/10 text-success">Completed</Badge>;
+        return <Badge className="bg-success/10 text-success">Completata</Badge>;
       case 'cancelled':
-        return <Badge variant="destructive">Cancelled</Badge>;
+        return <Badge variant="destructive">Annullata</Badge>;
       default:
-        return <Badge className="bg-accent/10 text-accent">Scheduled</Badge>;
+        return <Badge className="bg-accent/10 text-accent">Programmata</Badge>;
     }
   };
 
@@ -106,7 +109,7 @@ export default function Bookings() {
 
   if (bookingsLoading) {
     return (
-      <Layout title="Bookings" subtitle="Manage appointments and service bookings">
+      <Layout title="Prenotazioni" subtitle="Gestisci appuntamenti e prenotazioni servizi">
         <div className="animate-pulse">
           <div className="h-10 bg-gray-200 rounded w-1/3 mb-6"></div>
           <div className="space-y-4">
@@ -120,7 +123,7 @@ export default function Bookings() {
   }
 
   return (
-    <Layout title="Bookings" subtitle="Manage appointments and service bookings">
+    <Layout title="Prenotazioni" subtitle="Gestisci appuntamenti e prenotazioni servizi">
       <div className="space-y-6">
         {/* Search and Filters */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
@@ -128,7 +131,7 @@ export default function Bookings() {
             <div className="relative flex-1 max-w-md">
               <Input
                 type="text"
-                placeholder="Search by client name or service..."
+                placeholder="Cerca per nome cliente o servizio..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -140,10 +143,10 @@ export default function Bookings() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
             >
-              <option value="all">All Status</option>
-              <option value="scheduled">Scheduled</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
+              <option value="all">Tutti gli Stati</option>
+              <option value="scheduled">Programmata</option>
+              <option value="completed">Completata</option>
+              <option value="cancelled">Annullata</option>
             </select>
           </div>
           <Button
@@ -151,7 +154,7 @@ export default function Bookings() {
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
             <CalendarPlus className="w-4 h-4 mr-2" />
-            New Booking
+            Nuova Prenotazione
           </Button>
         </div>
 
@@ -161,7 +164,7 @@ export default function Bookings() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Today's Bookings</p>
+                  <p className="text-muted-foreground text-sm font-medium">Prenotazioni Oggi</p>
                   <p className="text-2xl font-bold text-foreground mt-1">{todayBookings.length}</p>
                 </div>
                 <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -175,7 +178,7 @@ export default function Bookings() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Upcoming</p>
+                  <p className="text-muted-foreground text-sm font-medium">Prossime</p>
                   <p className="text-2xl font-bold text-foreground mt-1">{upcomingBookings.length}</p>
                 </div>
                 <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
@@ -189,7 +192,7 @@ export default function Bookings() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Completed</p>
+                  <p className="text-muted-foreground text-sm font-medium">Completate</p>
                   <p className="text-2xl font-bold text-foreground mt-1">
                     {bookings.filter(b => b.status === 'completed').length}
                   </p>
@@ -205,9 +208,9 @@ export default function Bookings() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Total Revenue</p>
+                  <p className="text-muted-foreground text-sm font-medium">Ricavi Totali</p>
                   <p className="text-2xl font-bold text-foreground mt-1">
-                    ${bookings
+                    €{bookings
                       .filter(b => b.status === 'completed')
                       .reduce((sum, b) => sum + parseFloat(b.totalPrice), 0)
                       .toFixed(2)}
@@ -225,7 +228,7 @@ export default function Bookings() {
         <Card>
           <CardHeader>
             <CardTitle className="font-poppins font-semibold text-lg">
-              All Bookings ({filteredBookings.length})
+              Tutte le Prenotazioni ({filteredBookings.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -233,12 +236,12 @@ export default function Bookings() {
               <div className="text-center py-12">
                 <CalendarPlus className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-foreground mb-2">
-                  {searchTerm || statusFilter !== "all" ? "No bookings found" : "No bookings yet"}
+                  {searchTerm || statusFilter !== "all" ? "Nessuna prenotazione trovata" : "Nessuna prenotazione ancora"}
                 </h3>
                 <p className="text-muted-foreground mb-4">
                   {searchTerm || statusFilter !== "all"
-                    ? "Try adjusting your search or filter criteria" 
-                    : "Create your first booking to get started"
+                    ? "Prova a modificare i criteri di ricerca o filtro" 
+                    : "Crea la tua prima prenotazione per iniziare"
                   }
                 </p>
                 {!searchTerm && statusFilter === "all" && (
@@ -247,7 +250,7 @@ export default function Bookings() {
                     className="bg-primary text-primary-foreground hover:bg-primary/90"
                   >
                     <CalendarPlus className="w-4 h-4 mr-2" />
-                    Create First Booking
+                    Crea Prima Prenotazione
                   </Button>
                 )}
               </div>
@@ -255,12 +258,12 @@ export default function Bookings() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Client</TableHead>
-                    <TableHead>Service</TableHead>
-                    <TableHead>Date & Time</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>Cliente</TableHead>
+                    <TableHead>Servizio</TableHead>
+                    <TableHead>Data e Ora</TableHead>
+                    <TableHead>Prezzo</TableHead>
+                    <TableHead>Stato</TableHead>
+                    <TableHead className="text-right">Azioni</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -280,7 +283,7 @@ export default function Bookings() {
                         <div>
                           <p className="font-medium text-foreground">{booking.service?.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            {booking.service?.duration} minutes
+                            {booking.service?.duration} minuti
                           </p>
                         </div>
                       </TableCell>
@@ -295,13 +298,24 @@ export default function Bookings() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="font-medium text-foreground">${booking.totalPrice}</span>
+                        <span className="font-medium text-foreground">€{booking.totalPrice}</span>
                       </TableCell>
                       <TableCell>
                         {getStatusBadge(booking.status)}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end space-x-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedBooking(booking);
+                              setShowExtraServicesModal(true);
+                            }}
+                          >
+                            <Plus className="w-3 h-3 mr-1" />
+                            Servizi Extra
+                          </Button>
                           {booking.status === 'scheduled' && (
                             <>
                               <Button
@@ -311,7 +325,7 @@ export default function Bookings() {
                                 className="text-success hover:text-success"
                               >
                                 <CheckCircle className="w-3 h-3 mr-1" />
-                                Complete
+                                Completa
                               </Button>
                               <Button
                                 size="sm"
@@ -320,7 +334,7 @@ export default function Bookings() {
                                 className="text-destructive hover:text-destructive"
                               >
                                 <XCircle className="w-3 h-3 mr-1" />
-                                Cancel
+                                Annulla
                               </Button>
                             </>
                           )}
@@ -337,6 +351,16 @@ export default function Bookings() {
 
       {/* Modals */}
       <AddBookingModal open={showAddBookingModal} onOpenChange={setShowAddBookingModal} />
+      {selectedBooking && (
+        <AddExtraServicesModal 
+          open={showExtraServicesModal} 
+          onOpenChange={(open) => {
+            setShowExtraServicesModal(open);
+            if (!open) setSelectedBooking(null);
+          }}
+          booking={selectedBooking}
+        />
+      )}
     </Layout>
   );
 }

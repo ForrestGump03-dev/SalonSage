@@ -229,7 +229,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/bookings/:id", async (req, res) => {
     try {
-      const updateData = insertBookingSchema.partial().parse(req.body);
+      const updateData = insertBookingSchema.partial().extend({
+        additionalServices: z.array(z.string()).optional()
+      }).parse(req.body);
       const booking = await storage.updateBooking(req.params.id, updateData);
       if (!booking) {
         return res.status(404).json({ message: "Booking not found" });
@@ -240,6 +242,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid booking data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to update booking" });
+    }
+  });
+
+  // Client subscription update route for scaling
+  app.put("/api/client-subscriptions/:id", async (req, res) => {
+    try {
+      const updateData = insertClientSubscriptionSchema.partial().extend({
+        scaledUsageLimit: z.number().optional()
+      }).parse(req.body);
+      const clientSubscription = await storage.updateClientSubscription(req.params.id, updateData);
+      if (!clientSubscription) {
+        return res.status(404).json({ message: "Client subscription not found" });
+      }
+      res.json(clientSubscription);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid client subscription data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update client subscription" });
+    }
+  });
+
+  // Single subscription by ID
+  app.get("/api/subscriptions/:id", async (req, res) => {
+    try {
+      const subscription = await storage.getSubscription(req.params.id);
+      if (!subscription) {
+        return res.status(404).json({ message: "Subscription not found" });
+      }
+      res.json(subscription);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch subscription" });
     }
   });
 

@@ -47,16 +47,16 @@ export default function Services() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/services"] });
       toast({
-        title: "Success",
-        description: "Service created successfully",
+        title: "Successo",
+        description: "Servizio creato con successo",
       });
       form.reset();
       setShowAddServiceModal(false);
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to create service",
+        title: "Errore",
+        description: error.message || "Impossibile creare il servizio",
         variant: "destructive",
       });
     },
@@ -70,16 +70,16 @@ export default function Services() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/services"] });
       toast({
-        title: "Success",
-        description: "Service updated successfully",
+        title: "Successo",
+        description: "Servizio aggiornato con successo",
       });
       setEditingService(null);
       form.reset();
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to update service",
+        title: "Errore",
+        description: error.message || "Impossibile aggiornare il servizio",
         variant: "destructive",
       });
     },
@@ -92,14 +92,14 @@ export default function Services() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/services"] });
       toast({
-        title: "Success",
-        description: "Service deleted successfully",
+        title: "Successo",
+        description: "Servizio eliminato con successo",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to delete service",
+        title: "Errore",
+        description: error.message || "Impossibile eliminare il servizio",
         variant: "destructive",
       });
     },

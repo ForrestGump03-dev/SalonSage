@@ -40,12 +40,14 @@ export const clientSubscriptions = pgTable("client_subscriptions", {
   purchaseDate: timestamp("purchase_date").defaultNow().notNull(),
   expiryDate: timestamp("expiry_date"),
   isActive: boolean("is_active").default(true),
+  scaledUsageLimit: integer("scaled_usage_limit"), // For upgraded subscription limits
 });
 
 export const bookings = pgTable("bookings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   clientId: varchar("client_id").references(() => clients.id).notNull(),
   serviceId: varchar("service_id").references(() => services.id).notNull(),
+  additionalServices: json("additional_services").$type<string[]>().default([]), // Array of service IDs for extra services
   clientSubscriptionId: varchar("client_subscription_id").references(() => clientSubscriptions.id),
   appointmentDate: timestamp("appointment_date").notNull(),
   totalPrice: decimal("total_price", { precision: 10, scale: 2 }).notNull(),
