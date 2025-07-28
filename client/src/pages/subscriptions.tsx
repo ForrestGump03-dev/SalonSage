@@ -241,8 +241,8 @@ export default function Subscriptions() {
         {/* Tabs for Packages and Client Subscriptions */}
         <Tabs defaultValue="packages" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="packages">Subscription Packages</TabsTrigger>
-            <TabsTrigger value="client-subscriptions">Client Subscriptions</TabsTrigger>
+            <TabsTrigger value="packages">Pacchetti Abbonamento</TabsTrigger>
+            <TabsTrigger value="client-subscriptions">Abbonamenti Clienti</TabsTrigger>
           </TabsList>
 
           {/* Subscription Packages Tab */}
@@ -252,7 +252,7 @@ export default function Subscriptions() {
               <div className="relative flex-1 max-w-md">
                 <Input
                   type="text"
-                  placeholder="Search packages..."
+                  placeholder="Cerca Pacchetti..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -264,7 +264,7 @@ export default function Subscriptions() {
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Add Package
+                Aggiungi Pacchetto
               </Button>
             </div>
 
@@ -273,12 +273,12 @@ export default function Subscriptions() {
               <div className="text-center py-12">
                 <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-foreground mb-2">
-                  {searchTerm ? "No packages found" : "No subscription packages yet"}
+                  {searchTerm ? "Nessun pacchetto trovato" : "Nessun pacchetto abbonamento ancora"}
                 </h3>
                 <p className="text-muted-foreground mb-4">
                   {searchTerm 
-                    ? "Try adjusting your search terms" 
-                    : "Create your first subscription package to get started"
+                    ? "Prova a modificare i termini di ricerca" 
+                    : "Crea il tuo primo pacchetto abbonamento per iniziare"
                   }
                 </p>
                 {!searchTerm && (
@@ -335,10 +335,10 @@ export default function Subscriptions() {
 
                         <div className="flex items-center justify-between pt-2">
                           <Badge className={subscription.isActive ? "bg-success/10 text-success" : "bg-muted"}>
-                            {subscription.isActive ? "Active" : "Inactive"}
+                            {subscription.isActive ? "Attivo" : "Inattivo"}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
-                            {clientSubscriptions.filter(cs => cs.subscriptionId === subscription.id).length} subscribers
+                            {clientSubscriptions.filter(cs => cs.subscriptionId === subscription.id).length} iscritti
                           </span>
                         </div>
                       </div>
@@ -458,12 +458,12 @@ export default function Subscriptions() {
                           </TableCell>
                           <TableCell>
                             <Badge className={cs.isActive ? "bg-success/10 text-success" : "bg-muted"}>
-                              {cs.isActive ? "Active" : "Inactive"}
+                              {cs.isActive ? "Attivo" : "Inattivo"}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-right">
                             <span className="font-medium text-foreground">
-                              ${cs.subscription?.price}
+                              €{cs.subscription?.price}
                             </span>
                           </TableCell>
                         </TableRow>
@@ -481,7 +481,7 @@ export default function Subscriptions() {
       <Dialog open={showAddPackageModal} onOpenChange={setShowAddPackageModal}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="font-poppins font-semibold text-xl">Add Subscription Package</DialogTitle>
+            <DialogTitle className="font-poppins font-semibold text-xl">Aggiungi Pacchetto Abbonamento</DialogTitle>
           </DialogHeader>
           
           <Form {...form}>
@@ -505,12 +505,13 @@ export default function Subscriptions() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>Descrizione</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Package description..." 
+                        placeholder="Descrizione del pacchetto..." 
                         rows={3} 
-                        {...field} 
+                        {...field}
+                        value={field.value || ""}
                       />
                     </FormControl>
                     <FormMessage />
@@ -524,7 +525,7 @@ export default function Subscriptions() {
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Price ($)</FormLabel>
+                      <FormLabel>Prezzo (€)</FormLabel>
                       <FormControl>
                         <Input 
                           type="number" 
@@ -564,14 +565,14 @@ export default function Subscriptions() {
                   variant="outline"
                   onClick={() => setShowAddPackageModal(false)}
                 >
-                  Cancel
+                  Annulla
                 </Button>
                 <Button
                   type="submit"
                   disabled={createSubscriptionMutation.isPending}
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  {createSubscriptionMutation.isPending ? "Creating..." : "Create Package"}
+                  {createSubscriptionMutation.isPending ? "Creazione..." : "Crea Pacchetto"}
                 </Button>
               </div>
             </form>

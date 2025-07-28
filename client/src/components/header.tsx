@@ -27,7 +27,7 @@ export function Header({ title, subtitle }: HeaderProps) {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Search clients..."
+                placeholder="Cerca clienti..."
                 className="pl-10 pr-4 py-2 w-64"
               />
               <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
@@ -39,7 +39,7 @@ export function Header({ title, subtitle }: HeaderProps) {
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Add Client
+              Aggiungi Cliente
             </Button>
             
             {/* Profile Menu */}

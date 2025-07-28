@@ -155,7 +155,7 @@ export default function Services() {
 
   if (isLoading) {
     return (
-      <Layout title="Services" subtitle="Manage your salon services and pricing">
+      <Layout title="Servizi" subtitle="Gestisci i servizi del tuo salone e i prezzi">
         <div className="animate-pulse">
           <div className="h-10 bg-gray-200 rounded w-1/3 mb-6"></div>
           <div className="space-y-4">
@@ -169,14 +169,14 @@ export default function Services() {
   }
 
   return (
-    <Layout title="Services" subtitle="Manage your salon services and pricing">
+    <Layout title="Servizi" subtitle="Gestisci i servizi del tuo salone e i prezzi">
       <div className="space-y-6">
         {/* Search and Actions */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="relative flex-1 max-w-md">
             <Input
               type="text"
-              placeholder="Search services by name or description..."
+              placeholder="Cerca servizi per nome o descrizione..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -188,7 +188,7 @@ export default function Services() {
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add New Service
+            Aggiungi Nuovo Servizio
           </Button>
         </div>
 
@@ -198,7 +198,7 @@ export default function Services() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Total Services</p>
+                  <p className="text-muted-foreground text-sm font-medium">Totale Servizi</p>
                   <p className="text-2xl font-bold text-foreground mt-1">{services.length}</p>
                 </div>
                 <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -212,7 +212,7 @@ export default function Services() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Active Services</p>
+                  <p className="text-muted-foreground text-sm font-medium">Servizi Attivi</p>
                   <p className="text-2xl font-bold text-foreground mt-1">{activeServices.length}</p>
                 </div>
                 <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
@@ -226,8 +226,8 @@ export default function Services() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Average Price</p>
-                  <p className="text-2xl font-bold text-foreground mt-1">${averagePrice.toFixed(2)}</p>
+                  <p className="text-muted-foreground text-sm font-medium">Prezzo Medio</p>
+                  <p className="text-2xl font-bold text-foreground mt-1">€{averagePrice.toFixed(2)}</p>
                 </div>
                 <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
                   <DollarSign className="text-accent w-5 h-5" />
@@ -240,7 +240,7 @@ export default function Services() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Avg Duration</p>
+                  <p className="text-muted-foreground text-sm font-medium">Durata Media</p>
                   <p className="text-2xl font-bold text-foreground mt-1">
                     {services.length > 0 
                       ? Math.round(services.reduce((sum, s) => sum + s.duration, 0) / services.length)
@@ -259,7 +259,7 @@ export default function Services() {
         <Card>
           <CardHeader>
             <CardTitle className="font-poppins font-semibold text-lg">
-              Service Catalog ({filteredServices.length})
+              Catalogo Servizi ({filteredServices.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -267,12 +267,12 @@ export default function Services() {
               <div className="text-center py-12">
                 <Scissors className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-foreground mb-2">
-                  {searchTerm ? "No services found" : "No services yet"}
+                  {searchTerm ? "Nessun servizio trovato" : "Nessun servizio ancora"}
                 </h3>
                 <p className="text-muted-foreground mb-4">
                   {searchTerm 
-                    ? "Try adjusting your search terms" 
-                    : "Add your first service to get started"
+                    ? "Prova a modificare i termini di ricerca" 
+                    : "Aggiungi il tuo primo servizio per iniziare"
                   }
                 </p>
                 {!searchTerm && (
@@ -281,7 +281,7 @@ export default function Services() {
                     className="bg-primary text-primary-foreground hover:bg-primary/90"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Add First Service
+                    Aggiungi Primo Servizio
                   </Button>
                 )}
               </div>
@@ -289,11 +289,11 @@ export default function Services() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Service</TableHead>
-                    <TableHead>Duration</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>Servizio</TableHead>
+                    <TableHead>Durata</TableHead>
+                    <TableHead>Prezzo</TableHead>
+                    <TableHead>Stato</TableHead>
+                    <TableHead className="text-right">Azioni</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -312,18 +312,18 @@ export default function Services() {
                       <TableCell>
                         <div className="flex items-center space-x-2">
                           <Clock className="w-3 h-3 text-muted-foreground" />
-                          <span className="text-sm">{service.duration} minutes</span>
+                          <span className="text-sm">{service.duration} minuti</span>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="font-medium text-foreground">${service.price}</span>
+                        <span className="font-medium text-foreground">€{service.price}</span>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
                           {service.isActive ? (
-                            <Badge className="bg-success/10 text-success">Active</Badge>
+                            <Badge className="bg-success/10 text-success">Attivo</Badge>
                           ) : (
-                            <Badge variant="secondary">Inactive</Badge>
+                            <Badge variant="secondary">Inattivo</Badge>
                           )}
                         </div>
                       </TableCell>
@@ -397,12 +397,13 @@ export default function Services() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>Descrizione</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Service description..." 
+                        placeholder="Descrizione del servizio..." 
                         rows={3} 
-                        {...field} 
+                        {...field}
+                        value={field.value || ""}
                       />
                     </FormControl>
                     <FormMessage />

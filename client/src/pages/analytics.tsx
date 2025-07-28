@@ -72,7 +72,7 @@ export default function Analytics() {
 
   if (dashboardLoading) {
     return (
-      <Layout title="Analytics" subtitle="Business insights and performance metrics">
+      <Layout title="Analisi" subtitle="Statistiche e performance dell'attività">
         <div className="animate-pulse space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
@@ -154,7 +154,7 @@ export default function Analytics() {
   ];
 
   return (
-    <Layout title="Analytics" subtitle="Business insights and performance metrics">
+    <Layout title="Analisi" subtitle="Statistiche e performance del business">
       <div className="space-y-6">
         {/* Key Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -162,7 +162,7 @@ export default function Analytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Total Revenue</p>
+                  <p className="text-muted-foreground text-sm font-medium">Totale Ricavi</p>
                   <p className="text-3xl font-bold text-foreground mt-2">
                     ${bookings.reduce((sum, b) => sum + parseFloat(b.totalPrice), 0).toFixed(2)}
                   </p>
@@ -182,11 +182,11 @@ export default function Analytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Total Bookings</p>
+                  <p className="text-muted-foreground text-sm font-medium">Totale Prenotazioni</p>
                   <p className="text-3xl font-bold text-foreground mt-2">{bookings.length}</p>
                   <p className="text-success text-sm mt-2 flex items-center">
                     <ArrowUp className="w-3 h-3 mr-1" />
-                    8% increase
+                    8% aumento
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -200,11 +200,11 @@ export default function Analytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Client Retention</p>
+                  <p className="text-muted-foreground text-sm font-medium">Fidelizzazione Clienti</p>
                   <p className="text-3xl font-bold text-foreground mt-2">92%</p>
                   <p className="text-accent text-sm mt-2 flex items-center">
                     <Minus className="w-3 h-3 mr-1" />
-                    Stable
+                    Stabile
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
@@ -218,7 +218,7 @@ export default function Analytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Avg. Service Value</p>
+                  <p className="text-muted-foreground text-sm font-medium">Valore Medio del Servizio</p>
                   <p className="text-3xl font-bold text-foreground mt-2">
                     ${bookings.length > 0 
                       ? (bookings.reduce((sum, b) => sum + parseFloat(b.totalPrice), 0) / bookings.length).toFixed(2)
@@ -240,10 +240,10 @@ export default function Analytics() {
 
         {/* Charts Row 1 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Monthly Revenue Chart */}
+          {/* Grafico dei Ricavi Mensili */}
           <Card>
             <CardHeader>
-              <CardTitle className="font-poppins font-semibold text-lg">Monthly Revenue Trend</CardTitle>
+              <CardTitle className="font-poppins font-semibold text-lg">Trend dei Ricavi Mensili</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -280,10 +280,10 @@ export default function Analytics() {
             </CardContent>
           </Card>
 
-          {/* Service Performance Chart */}
+          {/* Grafico delle Prestazioni del Servizio */}
           <Card>
             <CardHeader>
-              <CardTitle className="font-poppins font-semibold text-lg">Service Performance</CardTitle>
+              <CardTitle className="font-poppins font-semibold text-lg">Prestazioni del Servizio</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -323,10 +323,10 @@ export default function Analytics() {
 
         {/* Charts Row 2 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Client Growth */}
+          {/* Crescita Clientela */}
           <Card>
             <CardHeader>
-              <CardTitle className="font-poppins font-semibold text-lg">Client Growth</CardTitle>
+              <CardTitle className="font-poppins font-semibold text-lg">Crescita Clientela</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={250}>
@@ -360,10 +360,10 @@ export default function Analytics() {
             </CardContent>
           </Card>
 
-          {/* Subscription Distribution */}
+          {/* Distribuzione Abbonamenti */}
           <Card>
             <CardHeader>
-              <CardTitle className="font-poppins font-semibold text-lg">Subscription Distribution</CardTitle>
+              <CardTitle className="font-poppins font-semibold text-lg">Distribuzione Abbonamenti</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={250}>
@@ -405,10 +405,10 @@ export default function Analytics() {
             </CardContent>
           </Card>
 
-          {/* Booking Status Distribution */}
+          {/* Distribuzione Stato Prenotazione */}
           <Card>
             <CardHeader>
-              <CardTitle className="font-poppins font-semibold text-lg">Booking Status</CardTitle>
+              <CardTitle className="font-poppins font-semibold text-lg">Stato Prenotazione</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={250}>
@@ -449,45 +449,45 @@ export default function Analytics() {
           </Card>
         </div>
 
-        {/* Performance Summary */}
+        {/* Riepilogo delle Prestazioni */}
         <Card>
           <CardHeader>
-            <CardTitle className="font-poppins font-semibold text-lg">Performance Summary</CardTitle>
+            <CardTitle className="font-poppins font-semibold text-lg">Riepilogo delle Prestazioni</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="text-center">
                 <p className="text-2xl font-bold text-foreground">{completedBookings}</p>
-                <p className="text-sm text-muted-foreground">Completed Services</p>
+                <p className="text-sm text-muted-foreground">Servizi Completati</p>
                 <p className="text-xs text-success mt-1">
-                  {bookings.length > 0 ? Math.round((completedBookings / bookings.length) * 100) : 0}% completion rate
+                  {bookings.length > 0 ? Math.round((completedBookings / bookings.length) * 100) : 0}% tasso di completamento
                 </p>
               </div>
               
               <div className="text-center">
                 <p className="text-2xl font-bold text-foreground">{services.length}</p>
-                <p className="text-sm text-muted-foreground">Service Options</p>
+                <p className="text-sm text-muted-foreground">Opzioni Servizio</p>
                 <p className="text-xs text-primary mt-1">
                   ${services.length > 0 
                     ? (services.reduce((sum, s) => sum + parseFloat(s.price), 0) / services.length).toFixed(2)
                     : '0.00'
-                  } avg price
+                  } prezzo medio
                 </p>
               </div>
 
               <div className="text-center">
                 <p className="text-2xl font-bold text-foreground">${stats.monthlyRevenue.toFixed(2)}</p>
-                <p className="text-sm text-muted-foreground">This Month</p>
+                <p className="text-sm text-muted-foreground">Questo Mese</p>
                 <p className="text-xs text-accent mt-1">
-                  {stats.todayAppointments} appointments today
+                  {stats.todayAppointments} appuntamenti oggi
                 </p>
               </div>
 
               <div className="text-center">
                 <p className="text-2xl font-bold text-foreground">{stats.subscriptionRate}%</p>
-                <p className="text-sm text-muted-foreground">Subscription Rate</p>
+                <p className="text-sm text-muted-foreground">Tasso di Abbonamento</p>
                 <p className="text-xs text-success mt-1">
-                  {stats.activeSubscriptions} active subscriptions
+                  {stats.activeSubscriptions} abbonamenti attivi
                 </p>
               </div>
             </div>

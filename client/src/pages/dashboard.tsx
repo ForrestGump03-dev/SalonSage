@@ -290,7 +290,7 @@ export default function Dashboard() {
                   <Link href="/analytics">
                     <BarChart3 className="text-primary text-xl mb-2" />
                     <p className="font-medium text-foreground">Visualizza Report</p>
-                    <p className="text-sm text-muted-foreground">Analisi del business</p>
+                    <p className="text-sm text-muted-foreground">Analisi dell'attività</p>
                   </Link>
                 </Button>
               </div>
