@@ -7,6 +7,7 @@ SalonFlow is a comprehensive salon management system built as a full-stack web a
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Interface Language: Full Italian localization requested - all UI text, forms, messages, and user-facing content should be in Italian.
 
 ## System Architecture
 

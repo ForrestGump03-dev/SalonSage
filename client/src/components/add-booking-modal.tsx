@@ -73,16 +73,16 @@ export function AddBookingModal({ open, onOpenChange, preselectedClientId }: Add
       queryClient.invalidateQueries({ queryKey: ["/api/bookings"] });
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/dashboard"] });
       toast({
-        title: "Success",
-        description: "Booking created successfully",
+        title: "Successo",
+        description: "Prenotazione creata con successo",
       });
       form.reset();
       onOpenChange(false);
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to create booking",
+        title: "Errore",
+        description: error.message || "Impossibile creare la prenotazione",
         variant: "destructive",
       });
     },
@@ -96,7 +96,7 @@ export function AddBookingModal({ open, onOpenChange, preselectedClientId }: Add
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-poppins font-semibold text-xl">Book Service</DialogTitle>
+          <DialogTitle className="font-poppins font-semibold text-xl">Prenota Servizio</DialogTitle>
         </DialogHeader>
         
         <Form {...form}>
@@ -106,11 +106,11 @@ export function AddBookingModal({ open, onOpenChange, preselectedClientId }: Add
               name="clientId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Client</FormLabel>
+                  <FormLabel>Cliente</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a client" />
+                        <SelectValue placeholder="Seleziona un cliente" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -131,17 +131,17 @@ export function AddBookingModal({ open, onOpenChange, preselectedClientId }: Add
               name="serviceId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Service</FormLabel>
+                  <FormLabel>Servizio</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a service" />
+                        <SelectValue placeholder="Seleziona un servizio" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {services.map((service) => (
                         <SelectItem key={service.id} value={service.id}>
-                          {service.name} - ${service.price}
+                          {service.name} - €{service.price}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -156,7 +156,7 @@ export function AddBookingModal({ open, onOpenChange, preselectedClientId }: Add
               name="appointmentDate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Appointment Date & Time</FormLabel>
+                  <FormLabel>Data e Ora Appuntamento</FormLabel>
                   <FormControl>
                     <Input 
                       type="datetime-local" 
@@ -173,7 +173,7 @@ export function AddBookingModal({ open, onOpenChange, preselectedClientId }: Add
               name="totalPrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Total Price</FormLabel>
+                  <FormLabel>Prezzo Totale</FormLabel>
                   <FormControl>
                     <Input 
                       type="number" 
@@ -192,10 +192,10 @@ export function AddBookingModal({ open, onOpenChange, preselectedClientId }: Add
               name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Notes</FormLabel>
+                  <FormLabel>Note</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Additional booking information..." 
+                      placeholder="Informazioni aggiuntive sulla prenotazione..." 
                       rows={3} 
                       {...field} 
                       value={field.value || ""}
@@ -212,14 +212,14 @@ export function AddBookingModal({ open, onOpenChange, preselectedClientId }: Add
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                Cancel
+                Annulla
               </Button>
               <Button
                 type="submit"
                 disabled={createBookingMutation.isPending}
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                {createBookingMutation.isPending ? "Booking..." : "Book Service"}
+                {createBookingMutation.isPending ? "Prenotazione..." : "Prenota Servizio"}
               </Button>
             </div>
           </form>

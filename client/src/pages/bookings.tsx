@@ -42,14 +42,14 @@ export default function Bookings() {
       queryClient.invalidateQueries({ queryKey: ["/api/bookings"] });
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/dashboard"] });
       toast({
-        title: "Success",
-        description: "Booking status updated successfully",
+        title: "Successo",
+        description: "Stato prenotazione aggiornato con successo",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to update booking",
+        title: "Errore",
+        description: error.message || "Impossibile aggiornare la prenotazione",
         variant: "destructive",
       });
     },

@@ -35,14 +35,14 @@ export default function Clients() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
       toast({
-        title: "Success",
-        description: "Client deleted successfully",
+        title: "Successo",
+        description: "Cliente cancellato con successo",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to delete client",
+        title: "Errore",
+        description: error.message || "Impossibile cancellare il cliente",
         variant: "destructive",
       });
     },

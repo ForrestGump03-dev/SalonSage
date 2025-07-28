@@ -42,7 +42,7 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <Layout title="Dashboard" subtitle="Welcome back! Here's what's happening at your salon today.">
+      <Layout title="Dashboard" subtitle="Bentornato! Ecco cosa sta succedendo nel tuo salone oggi.">
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
@@ -69,7 +69,7 @@ export default function Dashboard() {
   };
 
   return (
-    <Layout title="Dashboard" subtitle="Welcome back! Here's what's happening at your salon today.">
+    <Layout title="Dashboard" subtitle="Bentornato! Ecco cosa sta succedendo nel tuo salone oggi.">
       <div className="space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -77,11 +77,11 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Active Clients</p>
+                  <p className="text-muted-foreground text-sm font-medium">Clienti Attivi</p>
                   <p className="text-3xl font-bold text-foreground mt-2">{stats.activeClients}</p>
                   <p className="text-success text-sm mt-2 flex items-center">
                     <ArrowUp className="w-3 h-3 mr-1" />
-                    12% this month
+                    +12% questo mese
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -95,11 +95,11 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Monthly Revenue</p>
-                  <p className="text-3xl font-bold text-foreground mt-2">${stats.monthlyRevenue.toFixed(2)}</p>
+                  <p className="text-muted-foreground text-sm font-medium">Ricavi Mensili</p>
+                  <p className="text-3xl font-bold text-foreground mt-2">€{stats.monthlyRevenue.toFixed(2)}</p>
                   <p className="text-success text-sm mt-2 flex items-center">
                     <ArrowUp className="w-3 h-3 mr-1" />
-                    8% from last month
+                    +8% dal mese scorso
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center">
@@ -113,11 +113,11 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Today's Appointments</p>
+                  <p className="text-muted-foreground text-sm font-medium">Appuntamenti di Oggi</p>
                   <p className="text-3xl font-bold text-foreground mt-2">{stats.todayAppointments}</p>
                   <p className="text-accent text-sm mt-2 flex items-center">
                     <Clock className="w-3 h-3 mr-1" />
-                    Next: 2:30 PM
+                    Prossimo: 14:30
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
@@ -131,11 +131,11 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm font-medium">Active Subscriptions</p>
+                  <p className="text-muted-foreground text-sm font-medium">Abbonamenti Attivi</p>
                   <p className="text-3xl font-bold text-foreground mt-2">{stats.activeSubscriptions}</p>
                   <p className="text-success text-sm mt-2 flex items-center">
                     <Star className="w-3 h-3 mr-1" />
-                    {stats.subscriptionRate}% of clients
+                    {stats.subscriptionRate}% dei clienti
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-secondary/60 rounded-lg flex items-center justify-center">
@@ -153,11 +153,11 @@ export default function Dashboard() {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="font-poppins font-semibold text-lg">Popular Services</CardTitle>
+                  <CardTitle className="font-poppins font-semibold text-lg">Servizi Popolari</CardTitle>
                   <select className="text-sm border border-input rounded-lg px-3 py-2 focus:ring-2 focus:ring-ring focus:border-transparent">
-                    <option>This Month</option>
-                    <option>Last Month</option>
-                    <option>This Year</option>
+                    <option>Questo Mese</option>
+                    <option>Mese Scorso</option>
+                    <option>Quest'Anno</option>
                   </select>
                 </div>
               </CardHeader>
@@ -171,7 +171,7 @@ export default function Dashboard() {
                         </div>
                         <div>
                           <p className="font-medium text-foreground">{service.name}</p>
-                          <p className="text-sm text-muted-foreground">{service.bookings} bookings</p>
+                          <p className="text-sm text-muted-foreground">{service.bookings} prenotazioni</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-4">
@@ -195,7 +195,7 @@ export default function Dashboard() {
           {/* Recent Activity */}
           <Card>
             <CardHeader>
-              <CardTitle className="font-poppins font-semibold text-lg">Recent Activity</CardTitle>
+              <CardTitle className="font-poppins font-semibold text-lg">Attività Recente</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -204,8 +204,8 @@ export default function Dashboard() {
                     <UserPlus className="text-success w-4 h-4" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-foreground">New client <strong>Sarah Johnson</strong> registered</p>
-                    <p className="text-xs text-muted-foreground mt-1">2 minutes ago</p>
+                    <p className="text-sm text-foreground">Nuovo cliente <strong>Sarah Johnson</strong> registrato</p>
+                    <p className="text-xs text-muted-foreground mt-1">2 minuti fa</p>
                   </div>
                 </div>
 
@@ -214,8 +214,8 @@ export default function Dashboard() {
                     <Calendar className="text-primary w-4 h-4" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-foreground">Appointment booked for <strong>Maria Garcia</strong></p>
-                    <p className="text-xs text-muted-foreground mt-1">15 minutes ago</p>
+                    <p className="text-sm text-foreground">Appuntamento prenotato per <strong>Maria Garcia</strong></p>
+                    <p className="text-xs text-muted-foreground mt-1">15 minuti fa</p>
                   </div>
                 </div>
 
@@ -224,8 +224,8 @@ export default function Dashboard() {
                     <Star className="text-accent w-4 h-4" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-foreground"><strong>Jennifer Lee</strong> upgraded to Premium subscription</p>
-                    <p className="text-xs text-muted-foreground mt-1">1 hour ago</p>
+                    <p className="text-sm text-foreground"><strong>Jennifer Lee</strong> ha aggiornato a abbonamento Premium</p>
+                    <p className="text-xs text-muted-foreground mt-1">1 ora fa</p>
                   </div>
                 </div>
 
@@ -234,8 +234,8 @@ export default function Dashboard() {
                     <DollarSign className="text-primary w-4 h-4" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-foreground">Payment received from <strong>Anna Thompson</strong> - $125</p>
-                    <p className="text-xs text-muted-foreground mt-1">2 hours ago</p>
+                    <p className="text-sm text-foreground">Pagamento ricevuto da <strong>Anna Thompson</strong> - €125</p>
+                    <p className="text-xs text-muted-foreground mt-1">2 ore fa</p>
                   </div>
                 </div>
               </div>
@@ -248,7 +248,7 @@ export default function Dashboard() {
           {/* Quick Actions */}
           <Card>
             <CardHeader>
-              <CardTitle className="font-poppins font-semibold text-lg">Quick Actions</CardTitle>
+              <CardTitle className="font-poppins font-semibold text-lg">Azioni Rapide</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
@@ -258,8 +258,8 @@ export default function Dashboard() {
                   onClick={() => setShowAddClientModal(true)}
                 >
                   <UserPlus className="text-primary text-xl mb-2" />
-                  <p className="font-medium text-foreground">Add Client</p>
-                  <p className="text-sm text-muted-foreground">Register new customer</p>
+                  <p className="font-medium text-foreground">Aggiungi Cliente</p>
+                  <p className="text-sm text-muted-foreground">Registra nuovo cliente</p>
                 </Button>
 
                 <Button
@@ -268,8 +268,8 @@ export default function Dashboard() {
                   onClick={() => setShowBookingModal(true)}
                 >
                   <CalendarPlus className="text-accent text-xl mb-2" />
-                  <p className="font-medium text-foreground">Book Service</p>
-                  <p className="text-sm text-muted-foreground">Schedule appointment</p>
+                  <p className="font-medium text-foreground">Prenota Servizio</p>
+                  <p className="text-sm text-muted-foreground">Pianifica appuntamento</p>
                 </Button>
 
                 <Button
@@ -278,8 +278,8 @@ export default function Dashboard() {
                   onClick={() => setShowSubscriptionModal(true)}
                 >
                   <Star className="text-success text-xl mb-2" />
-                  <p className="font-medium text-foreground">Add Subscription</p>
-                  <p className="text-sm text-muted-foreground">Create membership</p>
+                  <p className="font-medium text-foreground">Aggiungi Abbonamento</p>
+                  <p className="text-sm text-muted-foreground">Crea abbonamento</p>
                 </Button>
 
                 <Button
@@ -289,8 +289,8 @@ export default function Dashboard() {
                 >
                   <Link href="/analytics">
                     <BarChart3 className="text-primary text-xl mb-2" />
-                    <p className="font-medium text-foreground">View Reports</p>
-                    <p className="text-sm text-muted-foreground">Business analytics</p>
+                    <p className="font-medium text-foreground">Visualizza Report</p>
+                    <p className="text-sm text-muted-foreground">Analisi del business</p>
                   </Link>
                 </Button>
               </div>
@@ -301,16 +301,16 @@ export default function Dashboard() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="font-poppins font-semibold text-lg">Today's Schedule</CardTitle>
+                <CardTitle className="font-poppins font-semibold text-lg">Programma di Oggi</CardTitle>
                 <Button variant="ghost" size="sm" asChild>
-                  <Link href="/bookings">View All</Link>
+                  <Link href="/bookings">Vedi Tutto</Link>
                 </Button>
               </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {dashboardData?.todayBookings.length === 0 ? (
-                  <p className="text-muted-foreground text-sm">No appointments scheduled for today</p>
+                  <p className="text-muted-foreground text-sm">Nessun appuntamento programmato per oggi</p>
                 ) : (
                   dashboardData?.todayBookings.map((booking) => {
                     const appointmentTime = new Date(booking.appointmentDate);

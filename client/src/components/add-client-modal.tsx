@@ -39,16 +39,16 @@ export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
       toast({
-        title: "Success",
-        description: "Client added successfully",
+        title: "Successo",
+        description: "Cliente aggiunto con successo",
       });
       form.reset();
       onOpenChange(false);
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to add client",
+        title: "Errore",
+        description: error.message || "Impossibile aggiungere il cliente",
         variant: "destructive",
       });
     },
@@ -62,7 +62,7 @@ export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-poppins font-semibold text-xl">Add New Client</DialogTitle>
+          <DialogTitle className="font-poppins font-semibold text-xl">Aggiungi Nuovo Cliente</DialogTitle>
         </DialogHeader>
         
         <Form {...form}>
@@ -73,9 +73,9 @@ export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name</FormLabel>
+                    <FormLabel>Nome</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter first name" {...field} />
+                      <Input placeholder="Inserisci nome" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -87,9 +87,9 @@ export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name</FormLabel>
+                    <FormLabel>Cognome</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter last name" {...field} />
+                      <Input placeholder="Inserisci cognome" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -102,9 +102,9 @@ export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
+                  <FormLabel>Numero di Telefono</FormLabel>
                   <FormControl>
-                    <Input placeholder="(555) 123-4567" {...field} />
+                    <Input placeholder="+39 123 456 7890" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -116,9 +116,9 @@ export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email Address</FormLabel>
+                  <FormLabel>Indirizzo Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="client@example.com" {...field} value={field.value || ""} />
+                    <Input type="email" placeholder="cliente@esempio.com" {...field} value={field.value || ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -130,10 +130,10 @@ export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
               name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Notes</FormLabel>
+                  <FormLabel>Note</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Additional client information..." 
+                      placeholder="Informazioni aggiuntive sul cliente..." 
                       rows={3} 
                       {...field} 
                       value={field.value || ""}
@@ -150,14 +150,14 @@ export function AddClientModal({ open, onOpenChange }: AddClientModalProps) {
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                Cancel
+                Annulla
               </Button>
               <Button
                 type="submit"
                 disabled={createClientMutation.isPending}
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                {createClientMutation.isPending ? "Adding..." : "Add Client"}
+                {createClientMutation.isPending ? "Aggiunta in corso..." : "Aggiungi Cliente"}
               </Button>
             </div>
           </form>

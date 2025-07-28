@@ -15,11 +15,11 @@ import { useEffect, useState } from "react";
 
 const navigationItems = [
   { path: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { path: "/clients", icon: Users, label: "Clients" },
-  { path: "/bookings", icon: Calendar, label: "Bookings" },
-  { path: "/subscriptions", icon: Star, label: "Subscriptions" },
-  { path: "/services", icon: Scissors, label: "Services" },
-  { path: "/analytics", icon: BarChart3, label: "Analytics" },
+  { path: "/clients", icon: Users, label: "Clienti" },
+  { path: "/bookings", icon: Calendar, label: "Prenotazioni" },
+  { path: "/subscriptions", icon: Star, label: "Abbonamenti" },
+  { path: "/services", icon: Scissors, label: "Servizi" },
+  { path: "/analytics", icon: BarChart3, label: "Analisi" },
 ];
 
 export function Sidebar() {
@@ -44,8 +44,8 @@ export function Sidebar() {
           <div>
             <h1 className="font-poppins font-bold text-xl text-primary">SalonFlow</h1>
             <p className="text-xs text-muted-foreground">
-              {licenseStatus === 'licensed' ? 'Professional Edition' : 
-               licenseStatus === 'demo' ? 'Demo Version' : 'Loading...'}
+              {licenseStatus === 'licensed' ? 'Edizione Professionale' : 
+               licenseStatus === 'demo' ? 'Versione Demo' : 'Caricamento...'}
             </p>
           </div>
         </div>
@@ -90,11 +90,11 @@ export function Sidebar() {
               "text-sm font-medium",
               licenseStatus === 'licensed' ? "text-success" : "text-warning"
             )}>
-              {licenseStatus === 'licensed' ? 'Licensed' : 'Demo Mode'}
+              {licenseStatus === 'licensed' ? 'Con Licenza' : 'Modalità Demo'}
             </span>
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {licenseStatus === 'licensed' ? 'Full version activated' : 'Limited functionality'}
+            {licenseStatus === 'licensed' ? 'Versione completa attivata' : 'Funzionalità limitate'}
           </p>
         </div>
       </div>

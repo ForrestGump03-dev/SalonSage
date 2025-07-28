@@ -77,11 +77,11 @@ export class MemStorage implements IStorage {
   private async initializeDefaults() {
     // Default services
     const defaultServices = [
-      { name: "Hair Cut & Style", description: "Professional haircut with styling", price: "85.00", duration: 60, isActive: true },
-      { name: "Hair Coloring", description: "Full hair coloring service", price: "150.00", duration: 120, isActive: true },
-      { name: "Deep Conditioning", description: "Intensive hair treatment", price: "75.00", duration: 45, isActive: true },
-      { name: "Hair Treatment", description: "Specialized hair care treatment", price: "95.00", duration: 90, isActive: true },
-      { name: "Shampoo & Blow Dry", description: "Basic wash and dry service", price: "45.00", duration: 30, isActive: true },
+      { name: "Taglio e Piega", description: "Taglio professionale con piega", price: "85.00", duration: 60, isActive: true },
+      { name: "Colore Capelli", description: "Servizio completo di colorazione capelli", price: "150.00", duration: 120, isActive: true },
+      { name: "Condizionamento Profondo", description: "Trattamento intensivo per capelli", price: "75.00", duration: 45, isActive: true },
+      { name: "Trattamento Capelli", description: "Trattamento specializzato per la cura dei capelli", price: "95.00", duration: 90, isActive: true },
+      { name: "Shampoo e Piega", description: "Servizio base di lavaggio e asciugatura", price: "45.00", duration: 30, isActive: true },
     ];
 
     for (const service of defaultServices) {
@@ -91,18 +91,18 @@ export class MemStorage implements IStorage {
     // Default subscriptions
     const defaultSubscriptions = [
       { 
-        name: "Basic Package", 
-        description: "3 basic services per month", 
+        name: "Pacchetto Base", 
+        description: "3 servizi base al mese", 
         price: "200.00", 
-        servicesIncluded: ["Hair Cut & Style", "Shampoo & Blow Dry"], 
+        servicesIncluded: ["Taglio e Piega", "Shampoo e Piega"], 
         usageLimit: 3, 
         isActive: true 
       },
       { 
-        name: "Premium Package", 
-        description: "5 premium services per month", 
+        name: "Pacchetto Premium", 
+        description: "5 servizi premium al mese", 
         price: "350.00", 
-        servicesIncluded: ["Hair Cut & Style", "Hair Coloring", "Deep Conditioning"], 
+        servicesIncluded: ["Taglio e Piega", "Colore Capelli", "Condizionamento Profondo"], 
         usageLimit: 5, 
         isActive: true 
       },

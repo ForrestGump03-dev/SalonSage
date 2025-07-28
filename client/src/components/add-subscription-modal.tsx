@@ -58,16 +58,16 @@ export function AddSubscriptionModal({ open, onOpenChange, preselectedClientId }
       queryClient.invalidateQueries({ queryKey: ["/api/client-subscriptions"] });
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/dashboard"] });
       toast({
-        title: "Success",
-        description: "Subscription added successfully",
+        title: "Successo",
+        description: "Abbonamento aggiunto con successo",
       });
       form.reset();
       onOpenChange(false);
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to add subscription",
+        title: "Errore",
+        description: error.message || "Impossibile aggiungere l'abbonamento",
         variant: "destructive",
       });
     },
@@ -81,7 +81,7 @@ export function AddSubscriptionModal({ open, onOpenChange, preselectedClientId }
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-poppins font-semibold text-xl">Add Subscription</DialogTitle>
+          <DialogTitle className="font-poppins font-semibold text-xl">Aggiungi Abbonamento</DialogTitle>
         </DialogHeader>
         
         <Form {...form}>
