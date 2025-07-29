@@ -368,6 +368,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Auto-updater routes
+  app.get("/api/updates/status", async (req, res) => {
+    try {
+      const { autoUpdater } = await import("./auto-updater");
+      const status = await autoUpdater.getUpdateStatus();
+      res.json(status);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get update status" });
+    }
+  });
+
+  app.post("/api/updates/check", async (req, res) => {
+    try {
+      const { autoUpdater } = await import("./auto-updater");
+      const result = await autoUpdater.checkForUpdates();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to check for updates" });
+    }
+  });
+
+  app.post("/api/updates/install", async (req, res) => {
+    try {
+      const { downloadUrl } = req.body;
+      if (!downloadUrl) {
+        return res.status(400).json({ message: "Download URL is required" });
+      }
+
+      const { autoUpdater } = await import("./auto-updater");
+      const success = await autoUpdater.downloadAndInstallUpdate(downloadUrl);
+      
+      if (success) {
+        res.json({ message: "Update installation started" });
+      } else {
+        res.status(500).json({ message: "Failed to install update" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to install update" });
+    }
+  });
+
+  // Database backup
+  app.post("/api/backup", async (req, res) => {
+    try {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const backupPath = `./backups/salon_sage_backup_${timestamp}.db`;
+      
+      // Assicurati che la directory backups esista
+      const fs = await import('fs');
+      const path = await import('path');
+      const backupDir = path.dirname(backupPath);
+      if (!fs.existsSync(backupDir)) {
+        fs.mkdirSync(backupDir, { recursive: true });
+      }
+
+      // Crea backup solo se storage è SQLiteStorage
+      if ('backup' in storage && typeof storage.backup === 'function') {
+        (storage as any).backup(backupPath);
+        res.json({ 
+          message: "Backup creato con successo", 
+          backupPath 
+        });
+      } else {
+        res.status(500).json({ message: "Backup non supportato con il storage corrente" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create backup" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

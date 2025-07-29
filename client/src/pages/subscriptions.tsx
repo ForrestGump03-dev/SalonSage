@@ -432,24 +432,16 @@ export default function Subscriptions() {
                 />
                 <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
               </div>
-              <div className="flex space-x-2">
-                <Button
-                  onClick={() => setShowAddSubscriptionModal(true)}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Assign Subscription
-                </Button>
-                <Button
-                  onClick={addTestData}
-                  variant="outline"
-                  className="text-green-600 hover:text-green-700"
-                >
-                  <Package className="w-4 h-4 mr-2" />
-                  Aggiungi Dati Test
-                </Button>
+                <div className="flex space-x-2">
+                  <Button
+                    onClick={() => setShowAddSubscriptionModal(true)}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Assegna Abbonamento
+                  </Button>
+                </div>
               </div>
-            </div>
 
             {/* Client Subscriptions Table */}
             <Card>
@@ -477,7 +469,7 @@ export default function Subscriptions() {
                         className="bg-primary text-primary-foreground hover:bg-primary/90"
                       >
                         <Plus className="w-4 h-4 mr-2" />
-                        Assign First Subscription
+                        Assegna primo abbonamento
                       </Button>
                     )}
                   </div>
@@ -485,12 +477,12 @@ export default function Subscriptions() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Client</TableHead>
-                        <TableHead>Package</TableHead>
-                        <TableHead>Usage</TableHead>
-                        <TableHead>Purchase Date</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Value</TableHead>
+                        <TableHead>Cliente</TableHead>
+                        <TableHead>Pacchetto</TableHead>
+                        <TableHead>Utilizzo</TableHead>
+                        <TableHead>Data di acquisto</TableHead>
+                        <TableHead>Stato</TableHead>
+                        <TableHead className="text-right">Valore</TableHead>
                         <TableHead className="text-right">Azioni</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -511,15 +503,15 @@ export default function Subscriptions() {
                             <div>
                               <p className="font-medium text-foreground">{cs.subscription?.name}</p>
                               <p className="text-sm text-muted-foreground">
-                                {cs.subscription?.usageLimit} services included
+                                {cs.subscription?.usageLimit} servizi inclusi
                               </p>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="space-y-2">
                               <div className="flex justify-between text-sm">
-                                <span>{cs.remainingUses} remaining</span>
-                                <span>{(cs.subscription?.usageLimit || 0) - cs.remainingUses} used</span>
+                                <span>{cs.remainingUses} rimanenti</span>
+                                <span>{(cs.subscription?.usageLimit || 0) - cs.remainingUses} utilizzati</span>
                               </div>
                               <div className="w-full bg-gray-200 rounded-full h-2">
                                 <div 
@@ -584,7 +576,7 @@ export default function Subscriptions() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Package Name</FormLabel>
+                    <FormLabel>Nome Pacchetto</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g., Premium Package" {...field} />
                     </FormControl>
@@ -637,7 +629,7 @@ export default function Subscriptions() {
                   name="usageLimit"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Usage Limit</FormLabel>
+                      <FormLabel>Limite di Utilizzo</FormLabel>
                       <FormControl>
                         <Input 
                           type="number" 

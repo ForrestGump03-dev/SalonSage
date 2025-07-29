@@ -1,14 +1,13 @@
-import { defineConfig } from "drizzle-kit";
+import type { Config } from "drizzle-kit";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL, ensure the database is provisioned");
-}
+// Per SQLite locale, non abbiamo bisogno di DATABASE_URL
+const databasePath = process.env.DATABASE_PATH || "./data/salon_sage.db";
 
-export default defineConfig({
+export default {
   out: "./migrations",
   schema: "./shared/schema.ts",
-  dialect: "postgresql",
+  dialect: "sqlite",
   dbCredentials: {
-    url: process.env.DATABASE_URL,
+    url: databasePath,
   },
-});
+} satisfies Config;

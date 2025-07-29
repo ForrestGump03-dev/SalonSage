@@ -10,6 +10,7 @@ import Bookings from "@/pages/bookings";
 import Services from "@/pages/services";
 import Subscriptions from "@/pages/subscriptions";
 import Analytics from "@/pages/analytics";
+import Settings from "@/pages/settings";
 
 function Router() {
   return (
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/services" component={Services} />
       <Route path="/subscriptions" component={Subscriptions} />
       <Route path="/analytics" component={Analytics} />
+      <Route path="/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -6,7 +6,8 @@ import {
   Star, 
   Scissors, 
   BarChart3,
-  Key
+  Key,
+  Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -20,6 +21,7 @@ const navigationItems = [
   { path: "/subscriptions", icon: Star, label: "Abbonamenti" },
   { path: "/services", icon: Scissors, label: "Servizi" },
   { path: "/analytics", icon: BarChart3, label: "Analisi" },
+  { path: "/settings", icon: Settings, label: "Impostazioni" },
 ];
 
 export function Sidebar() {
