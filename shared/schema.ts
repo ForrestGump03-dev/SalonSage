@@ -1,67 +1,67 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, decimal, integer, timestamp, boolean, json } from "drizzle-orm/pg-core";
+import { sqliteTable, text, real, integer, blob } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const clients = pgTable("clients", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+export const clients = sqliteTable("clients", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   phone: text("phone").notNull(),
   email: text("email"),
   notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: integer("created_at", { mode: 'timestamp' }).$defaultFn(() => new Date()),
 });
 
-export const services = pgTable("services", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+export const services = sqliteTable("services", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   description: text("description"),
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  price: real("price").notNull(),
   duration: integer("duration").notNull(), // in minutes
-  isActive: boolean("is_active").default(true),
+  isActive: integer("is_active", { mode: 'boolean' }).default(true),
 });
 
-export const subscriptions = pgTable("subscriptions", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+export const subscriptions = sqliteTable("subscriptions", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   description: text("description"),
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-  servicesIncluded: json("services_included").$type<string[]>().notNull(),
+  price: real("price").notNull(),
+  servicesIncluded: text("services_included", { mode: 'json' }).$type<string[]>().notNull(),
   usageLimit: integer("usage_limit").notNull(),
-  isActive: boolean("is_active").default(true),
+  isActive: integer("is_active", { mode: 'boolean' }).default(true),
 });
 
-export const clientSubscriptions = pgTable("client_subscriptions", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  clientId: varchar("client_id").references(() => clients.id).notNull(),
-  subscriptionId: varchar("subscription_id").references(() => subscriptions.id).notNull(),
+export const clientSubscriptions = sqliteTable("client_subscriptions", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  clientId: text("client_id").references(() => clients.id).notNull(),
+  subscriptionId: text("subscription_id").references(() => subscriptions.id).notNull(),
   remainingUses: integer("remaining_uses").notNull(),
-  purchaseDate: timestamp("purchase_date").defaultNow().notNull(),
-  expiryDate: timestamp("expiry_date"),
-  isActive: boolean("is_active").default(true),
+  purchaseDate: integer("purchase_date", { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  expiryDate: integer("expiry_date", { mode: 'timestamp' }),
+  isActive: integer("is_active", { mode: 'boolean' }).default(true),
   scaledUsageLimit: integer("scaled_usage_limit"), // For upgraded subscription limits
 });
 
-export const bookings = pgTable("bookings", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  clientId: varchar("client_id").references(() => clients.id).notNull(),
-  serviceId: varchar("service_id").references(() => services.id).notNull(),
-  additionalServices: json("additional_services").$type<string[]>().default([]), // Array of service IDs for extra services
-  clientSubscriptionId: varchar("client_subscription_id").references(() => clientSubscriptions.id),
-  appointmentDate: timestamp("appointment_date").notNull(),
-  totalPrice: decimal("total_price", { precision: 10, scale: 2 }).notNull(),
+export const bookings = sqliteTable("bookings", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  clientId: text("client_id").references(() => clients.id).notNull(),
+  serviceId: text("service_id").references(() => services.id).notNull(),
+  additionalServices: text("additional_services", { mode: 'json' }).$type<string[]>().default([]), // Array of service IDs for extra services
+  clientSubscriptionId: text("client_subscription_id").references(() => clientSubscriptions.id),
+  appointmentDate: integer("appointment_date", { mode: 'timestamp' }).notNull(),
+  totalPrice: real("total_price").notNull(),
   status: text("status").notNull().default("scheduled"), // scheduled, completed, cancelled
   notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: integer("created_at", { mode: 'timestamp' }).$defaultFn(() => new Date()),
 });
 
-export const licenseKeys = pgTable("license_keys", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+export const licenseKeys = sqliteTable("license_keys", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   key: text("key").notNull().unique(),
-  isActive: boolean("is_active").default(true),
-  expiryDate: timestamp("expiry_date"),
-  features: json("features").$type<string[]>().notNull(),
+  isActive: integer("is_active", { mode: 'boolean' }).default(true),
+  expiryDate: integer("expiry_date", { mode: 'timestamp' }),
+  features: text("features", { mode: 'json' }).$type<string[]>().notNull(),
 });
 
 // Insert schemas
