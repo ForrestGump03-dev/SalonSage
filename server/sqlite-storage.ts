@@ -666,26 +666,18 @@ export class SQLiteStorage implements IStorage {
 
   async updateBooking(id: string, updateData: Partial<InsertBooking>): Promise<Booking | undefined> {
     try {
-      console.log('[updateBooking] Starting update for booking:', id);
-      console.log('[updateBooking] Update data:', updateData);
-      
       const current = await this.getBooking(id);
       if (!current) {
-        console.log('[updateBooking] Booking not found:', id);
         return undefined;
       }
-      
-      console.log('[updateBooking] Current booking:', current);
 
-      // Filter out undefined values from updateData
+      // Filter out undefined values from updateData to prevent overwriting existing values
       const filteredUpdateData = Object.entries(updateData).reduce((acc, [key, value]) => {
         if (value !== undefined) {
           acc[key] = value;
         }
         return acc;
       }, {} as any);
-
-      console.log('[updateBooking] Filtered update data:', filteredUpdateData);
 
       const updated = { 
         ...current, 
@@ -697,32 +689,16 @@ export class SQLiteStorage implements IStorage {
           : current.additionalServices
       };
 
-      console.log('[updateBooking] Updated booking object:', updated);
-
       // Ensure appointmentDate is a valid Date object
       const appointmentDate = updated.appointmentDate instanceof Date 
         ? updated.appointmentDate 
         : new Date(updated.appointmentDate);
-
-      console.log('[updateBooking] Processed appointment date:', appointmentDate);
 
       const stmt = this.db.prepare(`
         UPDATE bookings 
         SET client_id = ?, service_id = ?, additional_services = ?, client_subscription_id = ?, appointment_date = ?, total_price = ?, status = ?, notes = ?
         WHERE id = ?
       `);
-      
-      console.log('[updateBooking] Executing SQL with params:', {
-        clientId: updated.clientId,
-        serviceId: updated.serviceId,
-        additionalServices: updated.additionalServices,
-        clientSubscriptionId: updated.clientSubscriptionId,
-        appointmentDate: appointmentDate.getTime(),
-        totalPrice: updated.totalPrice,
-        status: updated.status,
-        notes: updated.notes,
-        id: id
-      });
       
       stmt.run(
         updated.clientId,
@@ -736,8 +712,6 @@ export class SQLiteStorage implements IStorage {
         id
       );
 
-      console.log('[updateBooking] SQL executed successfully');
-      console.log('[updateBooking] Returning updated booking:', updated);
       return updated;
     } catch (error) {
       console.error('[updateBooking] Error:', error);
