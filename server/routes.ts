@@ -7,7 +7,10 @@ import {
   insertSubscriptionSchema,
   insertClientSubscriptionSchema,
   insertBookingSchema,
-  insertLicenseKeySchema
+  apiInsertBookingSchema,
+  apiUpdateBookingSchema,
+  insertLicenseKeySchema,
+  type InsertBooking
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -214,7 +217,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/bookings", async (req, res) => {
     try {
-      const bookingData = insertBookingSchema.parse(req.body);
+      const apiData = apiInsertBookingSchema.parse(req.body);
+      
+      // Convert API data to database format
+      const appointmentDate = new Date(apiData.appointmentDate);
+      
+      const bookingData: InsertBooking = {
+        ...apiData,
+        appointmentDate,
+      };
       
       // If using subscription, deduct usage
       if (bookingData.clientSubscriptionId) {
@@ -240,10 +251,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/bookings/:id", async (req, res) => {
     try {
-      const updateData = insertBookingSchema.partial().extend({
-        additionalServices: z.array(z.string()).optional()
-      }).parse(req.body);
-      const booking = await storage.updateBooking(req.params.id, updateData);
+      const updateData = apiUpdateBookingSchema.parse(req.body);
+      
+      // Convert API data to database format
+      const processedData: Partial<InsertBooking> = {
+        clientId: updateData.clientId,
+        serviceId: updateData.serviceId,
+        totalPrice: updateData.totalPrice,
+        status: updateData.status,
+        notes: updateData.notes,
+        additionalServices: updateData.additionalServices,
+        clientSubscriptionId: updateData.clientSubscriptionId,
+      };
+      
+      if (updateData.appointmentDate) {
+        processedData.appointmentDate = new Date(updateData.appointmentDate);
+      }
+      
+      const booking = await storage.updateBooking(req.params.id, processedData);
       if (!booking) {
         return res.status(404).json({ message: "Booking not found" });
       }
@@ -302,13 +327,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Calculate stats
       const activeClients = clients.length;
       const todayBookings = bookings.filter(booking => {
+        if (!booking.appointmentDate) return false;
         const bookingDate = new Date(booking.appointmentDate);
         return bookingDate.toDateString() === today.toDateString();
       });
 
       const monthlyRevenue = bookings
-        .filter(booking => new Date(booking.createdAt) >= thisMonth)
-        .reduce((sum, booking) => sum + parseFloat(booking.totalPrice), 0);
+        .filter(booking => booking.createdAt && new Date(booking.createdAt) >= thisMonth)
+        .reduce((sum, booking) => sum + Number(booking.totalPrice), 0);
 
       const activeSubscriptions = clientSubscriptions.filter(cs => cs.isActive).length;
 

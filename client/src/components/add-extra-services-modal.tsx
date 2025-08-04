@@ -37,8 +37,8 @@ export function AddExtraServicesModal({ open, onOpenChange, booking }: AddExtraS
       
       // Calculate new total price
       const additionalServicesData = services.filter(s => additionalServices.includes(s.id));
-      const additionalPrice = additionalServicesData.reduce((sum, service) => sum + parseFloat(service.price), 0);
-      const newTotalPrice = (parseFloat(booking.totalPrice) + additionalPrice).toFixed(2);
+      const additionalPrice = additionalServicesData.reduce((sum, service) => sum + Number(service.price), 0);
+      const newTotalPrice = Number(booking.totalPrice) + additionalPrice;
 
       const response = await apiRequest("PUT", `/api/bookings/${booking.id}`, {
         additionalServices: allAdditional,
@@ -87,7 +87,7 @@ export function AddExtraServicesModal({ open, onOpenChange, booking }: AddExtraS
 
   const selectedTotal = selectedServices.reduce((sum, serviceId) => {
     const service = services.find(s => s.id === serviceId);
-    return sum + (service ? parseFloat(service.price) : 0);
+    return sum + (service ? Number(service.price) : 0);
   }, 0);
 
   return (
@@ -142,7 +142,7 @@ export function AddExtraServicesModal({ open, onOpenChange, booking }: AddExtraS
                   </div>
                   <div className="flex justify-between items-center text-sm text-muted-foreground">
                     <span>Nuovo totale prenotazione:</span>
-                    <span>€{(parseFloat(booking.totalPrice) + selectedTotal).toFixed(2)}</span>
+                    <span>€{(Number(booking.totalPrice) + selectedTotal).toFixed(2)}</span>
                   </div>
                 </div>
               )}

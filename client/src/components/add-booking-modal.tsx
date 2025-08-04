@@ -70,9 +70,8 @@ export function AddBookingModal({ open, onOpenChange, preselectedClientId }: Add
 
   const createBookingMutation = useMutation({
     mutationFn: async (data: BookingFormData) => {
-      const bookingData: InsertBooking = {
+      const bookingData = {
         ...data,
-        appointmentDate: new Date(data.appointmentDate),
         totalPrice: parseFloat(data.totalPrice),
         additionalServices: data.additionalServices || [],
       };

@@ -91,6 +91,30 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   createdAt: true,
 });
 
+// API schema that accepts string dates for HTTP requests
+export const apiInsertBookingSchema = z.object({
+  clientId: z.string().min(1, "Cliente è obbligatorio"),
+  serviceId: z.string().min(1, "Servizio è obbligatorio"),
+  appointmentDate: z.string().min(1, "Data appuntamento è obbligatoria"),
+  totalPrice: z.number().min(0, "Prezzo deve essere positivo"),
+  status: z.string().default("scheduled"),
+  notes: z.string().optional(),
+  additionalServices: z.array(z.string()).default([]),
+  clientSubscriptionId: z.string().optional(),
+});
+
+// API schema for updating bookings
+export const apiUpdateBookingSchema = z.object({
+  clientId: z.string().optional(),
+  serviceId: z.string().optional(),
+  appointmentDate: z.string().optional(),
+  totalPrice: z.number().min(0, "Prezzo deve essere positivo").optional(),
+  status: z.string().optional(),
+  notes: z.string().optional(),
+  additionalServices: z.array(z.string()).optional(),
+  clientSubscriptionId: z.string().optional(),
+});
+
 export const insertLicenseKeySchema = createInsertSchema(licenseKeys).omit({
   id: true,
 });

@@ -168,7 +168,10 @@ export class SQLiteStorage implements IStorage {
       ];
 
       for (const service of defaultServices) {
-        this.createService(service);
+        this.createService({
+          ...service,
+          price: parseFloat(service.price)
+        });
       }
     }
 
@@ -194,7 +197,10 @@ export class SQLiteStorage implements IStorage {
       ];
 
       for (const subscription of defaultSubscriptions) {
-        this.createSubscription(subscription);
+        this.createSubscription({
+          ...subscription,
+          price: parseFloat(subscription.price)
+        });
       }
     }
 
@@ -336,7 +342,7 @@ export class SQLiteStorage implements IStorage {
       client.phone,
       client.email,
       client.notes,
-      client.createdAt.toISOString()
+      client.createdAt ? client.createdAt.toISOString() : new Date().toISOString()
     );
 
     return client;
@@ -564,7 +570,7 @@ export class SQLiteStorage implements IStorage {
       clientSubscription.clientId,
       clientSubscription.subscriptionId,
       clientSubscription.remainingUses,
-      clientSubscription.purchaseDate.toISOString(),
+      clientSubscription.purchaseDate ? clientSubscription.purchaseDate.toISOString() : new Date().toISOString(),
       clientSubscription.expiryDate?.toISOString() || null,
       clientSubscription.isActive ? 1 : 0,
       clientSubscription.scaledUsageLimit
@@ -652,45 +658,91 @@ export class SQLiteStorage implements IStorage {
       booking.totalPrice,
       booking.status,
       booking.notes,
-      booking.createdAt.toISOString()
+      booking.createdAt ? booking.createdAt.toISOString() : new Date().toISOString()
     );
 
     return booking;
   }
 
   async updateBooking(id: string, updateData: Partial<InsertBooking>): Promise<Booking | undefined> {
-    const current = await this.getBooking(id);
-    if (!current) return undefined;
+    try {
+      console.log('[updateBooking] Starting update for booking:', id);
+      console.log('[updateBooking] Update data:', updateData);
+      
+      const current = await this.getBooking(id);
+      if (!current) {
+        console.log('[updateBooking] Booking not found:', id);
+        return undefined;
+      }
+      
+      console.log('[updateBooking] Current booking:', current);
 
-    const updated = { 
-      ...current, 
-      ...updateData,
-      additionalServices: updateData.additionalServices 
-        ? Array.isArray(updateData.additionalServices) 
-          ? updateData.additionalServices as string[]
+      // Filter out undefined values from updateData
+      const filteredUpdateData = Object.entries(updateData).reduce((acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {} as any);
+
+      console.log('[updateBooking] Filtered update data:', filteredUpdateData);
+
+      const updated = { 
+        ...current, 
+        ...filteredUpdateData,
+        additionalServices: filteredUpdateData.additionalServices !== undefined
+          ? Array.isArray(filteredUpdateData.additionalServices) 
+            ? filteredUpdateData.additionalServices as string[]
+            : current.additionalServices
           : current.additionalServices
-        : current.additionalServices
-    };
+      };
 
-    const stmt = this.db.prepare(`
-      UPDATE bookings 
-      SET client_id = ?, service_id = ?, additional_services = ?, client_subscription_id = ?, appointment_date = ?, total_price = ?, status = ?, notes = ?
-      WHERE id = ?
-    `);
-    
-    stmt.run(
-      updated.clientId,
-      updated.serviceId,
-      updated.additionalServices ? JSON.stringify(updated.additionalServices) : null,
-      updated.clientSubscriptionId,
-      updated.appointmentDate.toISOString(),
-      updated.totalPrice,
-      updated.status,
-      updated.notes,
-      id
-    );
+      console.log('[updateBooking] Updated booking object:', updated);
 
-    return updated;
+      // Ensure appointmentDate is a valid Date object
+      const appointmentDate = updated.appointmentDate instanceof Date 
+        ? updated.appointmentDate 
+        : new Date(updated.appointmentDate);
+
+      console.log('[updateBooking] Processed appointment date:', appointmentDate);
+
+      const stmt = this.db.prepare(`
+        UPDATE bookings 
+        SET client_id = ?, service_id = ?, additional_services = ?, client_subscription_id = ?, appointment_date = ?, total_price = ?, status = ?, notes = ?
+        WHERE id = ?
+      `);
+      
+      console.log('[updateBooking] Executing SQL with params:', {
+        clientId: updated.clientId,
+        serviceId: updated.serviceId,
+        additionalServices: updated.additionalServices,
+        clientSubscriptionId: updated.clientSubscriptionId,
+        appointmentDate: appointmentDate.getTime(),
+        totalPrice: updated.totalPrice,
+        status: updated.status,
+        notes: updated.notes,
+        id: id
+      });
+      
+      stmt.run(
+        updated.clientId,
+        updated.serviceId,
+        updated.additionalServices ? JSON.stringify(updated.additionalServices) : null,
+        updated.clientSubscriptionId,
+        appointmentDate.getTime(), // Store as timestamp
+        updated.totalPrice,
+        updated.status,
+        updated.notes,
+        id
+      );
+
+      console.log('[updateBooking] SQL executed successfully');
+      console.log('[updateBooking] Returning updated booking:', updated);
+      return updated;
+    } catch (error) {
+      console.error('[updateBooking] Error:', error);
+      throw error;
+    }
   }
 
   async deleteBooking(id: string): Promise<boolean> {
