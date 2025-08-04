@@ -16,6 +16,7 @@ import { z } from "zod";
 
 const bookingFormSchema = insertBookingSchema.extend({
   appointmentDate: z.string().min(1, "Appointment date is required"),
+  totalPrice: z.string().min(1, "Total price is required"),
 });
 
 type BookingFormData = z.infer<typeof bookingFormSchema>;
@@ -56,7 +57,7 @@ export function AddBookingModal({ open, onOpenChange, preselectedClientId }: Add
   // Update total price when service changes
   React.useEffect(() => {
     if (selectedService) {
-      form.setValue("totalPrice", selectedService.price);
+      form.setValue("totalPrice", selectedService.price.toString());
     }
   }, [selectedService, form]);
 
@@ -65,6 +66,7 @@ export function AddBookingModal({ open, onOpenChange, preselectedClientId }: Add
       const bookingData: InsertBooking = {
         ...data,
         appointmentDate: new Date(data.appointmentDate),
+        totalPrice: parseFloat(data.totalPrice),
       };
       const response = await apiRequest("POST", "/api/bookings", bookingData);
       return response.json();
